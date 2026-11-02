@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.env
+.env.*
+!.env.example
+contracts/out
+contracts/cache
+lib
+console.jsonl
+traces.jsonl
+.circle
+recovery_file*
+.claude

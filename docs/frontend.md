@@ -1,0 +1,60 @@
+# Frontend
+
+React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected wallet (ConnectKit UI), react-router, TanStack Query, Sonner toasts and Lucide icons. Light theme, restrained green accent, no emojis.
+
+## Routes
+
+| Route | Page | Purpose |
+| --- | --- | --- |
+| `/` | `Landing` | Product overview and live contract totals |
+| `/dashboard` | `Dashboard` | Wallet overview: campaigns, funded, distributed, pending, unclaimed, USDC balance |
+| `/campaigns` | `Campaigns` | List of campaigns with status |
+| `/campaigns/new` | `Create` | Three-step creation: details, recipients, review and fund |
+| `/campaigns/:id` | `CampaignDetails` | Organizer view: funding, claimed, remaining, refundable, actions, transactions |
+| `/campaigns/:id/recipients` | `Recipients` | Recipient status, claim-link export (CSV), batch distribution, private-list import |
+| `/claim`, `/claim/:id` | `Claim` | Recipient page: eligibility check, wallet connect, claim |
+| `/verify`, `/verify/:id` | `Verify` | Public verification page, no wallet needed |
+| `/activity` | `Activity` | Paginated event history |
+| `/settings` | `Settings` | Network facts, USDC balance and allowance (with revoke), UI preferences |
+
+Campaign states shown in the UI are derived from contract data: `scheduled`, `active`, `completed`, `expired`, `cancelled`. A draft exists only in memory before the creation transaction (`useDraft`).
+
+## Source layout
+
+```
+src/
+  main.tsx, App.tsx, config.ts   providers, routes, wagmi config
+  pages/                         one file per route
+  components/                    layout, UI primitives, campaign parts, create steps
+  hooks/
+    useFlow.ts                   wallet, balance, allowance, campaign and global reads
+    useTx.ts                     transaction runner: phases, confirmation, error handling
+    useEventScanner.ts           windowed, paginated log scanning
+    useRecipients.ts             organizer working copy of recipients, link generation
+    useDraft.tsx                 in-memory campaign draft
+  lib/
+    abi.ts                       GiftFlow ABI
+    chain.ts                     campaign loading, claimed flags, integrity check
+    events.ts                    public client, log queries, event decoding
+    flow.ts                      metadata, CSV parsing, claim keys, links, status helpers
+    tree.ts                      Merkle sum tree (matches the contract)
+    format.ts                    USDC formatting, error explanations
+    network.ts                   active network, contract address, scan window
+    prefs.ts                     localStorage UI preferences
+    share.ts                     share-link helpers
+  onchain-facts.ts, onchain-money.ts, onchain-wait.ts   Arc chain facts and USDC/receipt helpers
+```
+
+## Wallet and transaction handling
+
+- Injected wallets only. Connect, disconnect, account change and chain change are handled by wagmi; `WalletGate` shows a connect or "switch to Arc Testnet" action when needed.
+- USDC balance and allowance are read live. `approve` is sent only when the allowance is below the campaign total, and Settings can revoke it.
+- Every write goes through `useTxAction`: simulate first, send, wait for the receipt, and only then show success. Rejections, reverts (mapped from custom errors), insufficient funds and RPC errors become readable messages.
+- Important actions (fund, distribute, refund, cancel, revoke) use a confirmation dialog.
+- Hash and explorer links are shown for confirmed transactions.
+
+## Configuration
+
+One build-time variable: `VITE_GIFTFLOW_ADDRESS_TESTNET` (see [deployment.md](deployment.md)). Chain ID, RPC, explorer and USDC address come from `src/onchain-facts.ts`.
+
+The footer badge "Built with Arc Studio" in `src/main.tsx` and the `installShareSync()` call are inherited from the Arc Studio scaffold; `share.ts` only talks to a parent frame when the app is embedded inside Studio.
