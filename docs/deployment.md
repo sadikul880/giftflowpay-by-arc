@@ -66,3 +66,9 @@ No volumes, databases or other services are needed.
 ## RPC capacity
 
 The app reads logs from the public Arc RPC, which limits `eth_getLogs` to about 10,000 blocks per request (the app already windows its scans) and rate-limits bursts (HTTP 429). For a launch with many simultaneous claimants, use a dedicated RPC endpoint by changing `rpcUrls` for Arc Testnet in `src/onchain-facts.ts` (and the wagmi transport in `src/config.ts`), then rebuild.
+
+## Build memory
+
+The production build runs on Node with a 1.28 GB heap cap (`NODE_OPTIONS` in the `Dockerfile`) and needs roughly 1.5 GB of free RAM in total. `vite.config.ts` stubs wallet SDKs that wagmi lazy-loads but this app never uses (WalletConnect, Coinbase, MetaMask, Safe, Porto, Base), which cut the build from more than 2 GB to about 1 GB of heap. A server with 2 GB RAM is enough; on a 1 GB server add swap. If a build dies with `exit code 137`, the server ran out of memory.
+
+Only the injected-wallet connector is configured. To add WalletConnect or another connector later, remove its SDK from `UNUSED_WALLET_SDKS` in `vite.config.ts`.
