@@ -4,11 +4,12 @@ import { useDraft } from '@/hooks/useDraft'
 import { checkRows, LIMITS, newRow, rowsFromCsv } from '@/lib/flow'
 import { fmtUsd } from '@/lib/format'
 import { Notice } from '@/components/ui'
+import { ModePicker, ShareForm } from './ModePicker'
 
 const PAGE = 20
 const TEMPLATE = 'wallet,amount,label\n0x0000000000000000000000000000000000000001,25,Example (replace with a real wallet)\n,10,Link-based recipient (leave wallet empty)\n'
 
-export function RecipientsStep({ showErrors }: { showErrors: boolean }) {
+function ListEditor({ showErrors }: { showErrors: boolean }) {
   const { draft, patch } = useDraft()
   const [page, setPage] = useState(0)
   const [note, setNote] = useState<string>()
@@ -107,6 +108,16 @@ export function RecipientsStep({ showErrors }: { showErrors: boolean }) {
       {showErrors && Object.keys(check.errors).length > 0 ? (
         <Notice tone="error">{Object.keys(check.errors).length} rows need attention before you can continue.</Notice>
       ) : null}
+    </div>
+  )
+}
+
+export function RecipientsStep({ showErrors }: { showErrors: boolean }) {
+  const { draft } = useDraft()
+  return (
+    <div className="space-y-6">
+      <ModePicker />
+      {draft.mode === 'list' ? <ListEditor showErrors={showErrors} /> : <ShareForm showErrors={showErrors} />}
     </div>
   )
 }

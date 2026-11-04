@@ -4,7 +4,7 @@ import { useSignMessage } from 'wagmi'
 import { Lock } from 'lucide-react'
 import { toast } from 'sonner'
 import { ConfirmDialog, Notice, StepList, WalletGate, type StepStatus } from '@/components/ui'
-import { draftTimes, useDraft } from '@/hooks/useDraft'
+import { draftPublic, draftRows, draftTimes, useDraft } from '@/hooks/useDraft'
 import { useAllowance, useGlobals, useUsdcBalance, useWallet } from '@/hooks/useFlow'
 import { useTxAction } from '@/hooks/useTx'
 import { flowAbi } from '@/lib/abi'
@@ -13,12 +13,16 @@ import {
   checkRows,
   claimKey,
   claimLink,
+  codeFor,
+  codeLink,
   encodeMeta,
   encodePublished,
+  keyFromCode,
   keyMessage,
   leavesFromRows,
   LIMITS,
   masterFromSignature,
+  openLink,
   randomSalt,
   typeLabel,
 } from '@/lib/flow'
@@ -41,8 +45,10 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
   const [open, setOpen] = useState(false)
   const [stage, setStage] = useState<Stage>('idle')
 
-  const max = draft.isPublic ? LIMITS.publicRecipients : LIMITS.privateRecipients
-  const check = useMemo(() => checkRows(draft.rows, max), [draft.rows, max])
+  const isPublic = draftPublic(draft)
+  const recipients = useMemo(() => draftRows(draft), [draft])
+  const max = isPublic ? LIMITS.publicRecipients : LIMITS.privateRecipients
+  const check = useMemo(() => checkRows(recipients, max), [recipients, max])
   const times = draftTimes(draft, now)
   const total = check.total
   const short = balance.data !== undefined && balance.data < total
@@ -66,7 +72,8 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
         s.phase('signing')
         master = masterFromSignature(await signMessageAsync({ message: keyMessage(contract, ACTIVE.chainId, salt) }))
       }
-      const leaves = leavesFromRows(draft.rows, master)
+      const keyOf = draft.mode === 'codes' && master ? (i: number) => keyFromCode(codeFor(master, i), salt) : undefined
+      const leaves = leavesFromRows(recipients, master, keyOf)
       const tree = buildTree(leaves)
       if (tree.total !== total) throw new Error('The allocation total changed unexpectedly. Please review and try again.')
 
@@ -77,7 +84,7 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
       }
 
       setStage('create')
-      const metadata = encodeMeta({ n: draft.name.trim(), d: draft.description.trim(), t: draft.type, m: draft.message.trim() })
+      const metadata = encodeMeta({ n: draft.name.trim(), d: draft.description.trim(), t: draft.type, m: draft.message.trim(), k: draft.mode })
       const { request } = await publicClient.simulateContract({
         account: owner,
         address: contract,
@@ -90,11 +97,11 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
             recipientCount: leaves.length,
             startTime: BigInt(t.start),
             claimDeadline: BigInt(t.deadline),
-            isPublic: draft.isPublic,
+            isPublic,
             salt,
           },
           metadata,
-          draft.isPublic ? encodePublished(leaves) : '0x',
+          isPublic ? encodePublished(leaves) : '0x',
         ],
       })
       const receipt = await write(request)
@@ -105,20 +112,28 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
       const rows = await Promise.all(
         leaves.map(async (leaf, i) => ({
           index: i,
-          label: draft.rows[i].label.trim(),
+          label: recipients[i].label.trim(),
           wallet: leaf.walletBound ? leaf.account : '',
           amount: leaf.amount,
-          link: await claimLink(id, leaf, {
-            isPublic: draft.isPublic,
-            key: master && !leaf.walletBound ? claimKey(master, i) : undefined,
-            proof: proofFor(tree, i),
-          }),
+          code: draft.mode === 'codes' && master ? codeFor(master, i) : undefined,
+          link:
+            draft.mode === 'codes' && master
+              ? await codeLink(id, codeFor(master, i))
+              : draft.mode === 'open'
+                ? ''
+                : await claimLink(id, leaf, {
+                    isPublic,
+                    key: master && !leaf.walletBound ? claimKey(master, i) : undefined,
+                    proof: proofFor(tree, i),
+                  }),
         })),
       )
       return {
         id,
         txHash: receipt.transactionHash,
-        isPublic: draft.isPublic,
+        isPublic,
+        mode: draft.mode,
+        openLink: draft.mode === 'open' && master ? await openLink(id, master) : undefined,
         name: draft.name.trim(),
         total,
         campaignLink: await buildShareLink(`/claim/${id}`),
@@ -147,11 +162,12 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
   const rows: Array<[string, React.ReactNode]> = [
     ['Name', draft.name.trim()],
     ['Type', typeLabel(draft.type)],
-    ['Recipients', `${draft.rows.length} (${check.walletCount} wallets, ${check.linkCount} claim links)`],
+    ['Recipients', draft.mode === 'list' ? `${recipients.length} (${check.walletCount} wallets, ${check.linkCount} claim links)` : `${recipients.length} equal shares of ${fmtUsd(recipients.length > 0 ? total / BigInt(recipients.length) : 0n)} USDC`],
+    ['Payout', draft.mode === 'list' ? 'Wallet list' : draft.mode === 'open' ? 'One shared link' : 'Secret codes'],
     ['Total to fund', `${fmtUsd(total)} USDC`],
     ['Claims open', draft.startNow ? 'When funded' : fmtDate(times.start)],
     ['Claim deadline', fmtDate(times.deadline)],
-    ['Recipient list', draft.isPublic ? 'Public' : 'Private'],
+    ['Recipient list', isPublic ? 'Public' : 'Private'],
     ['Network', ACTIVE.label],
   ]
 
@@ -198,7 +214,7 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
         open={open}
         title="Fund this campaign?"
         description="Your USDC moves into the GiftFlow contract in one transaction. You can only take it back by refunding after the deadline, or cancelling before claims open."
-        rows={[['Total', `${fmtUsd(total)} USDC`], ['Recipients', String(draft.rows.length)], ['Deadline', fmtDate(times.deadline)]]}
+        rows={[['Total', `${fmtUsd(total)} USDC`], ['Recipients', String(recipients.length)], ['Deadline', fmtDate(times.deadline)]]}
         confirmLabel={needsApproval ? 'Approve and fund' : 'Fund campaign'}
         busy={tx.busy}
         onCancel={() => setOpen(false)}

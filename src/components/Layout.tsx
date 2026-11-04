@@ -1,7 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ConnectKitButton } from 'connectkit'
-import { TriangleAlert, Wallet, Waypoints } from 'lucide-react'
+import { TriangleAlert, Wallet } from 'lucide-react'
 import { buildAddressExplorerUrl } from '@/onchain-facts'
 import { ACTIVE } from '@/lib/network'
 import { fmtUsd, shortAddr } from '@/lib/format'
@@ -84,9 +84,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-30 border-b backdrop-blur" style={{ borderColor: 'var(--border)', background: 'rgba(248,248,246,0.92)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <Link to="/" className="flex items-center gap-2" aria-label="GiftFlow home">
-            <span className="flex size-8 items-center justify-center rounded-lg" style={{ background: 'var(--green)', color: '#fff' }}>
-              <Waypoints className="size-4" />
-            </span>
+            <img src="/logo.jpg" alt="" width={32} height={32} className="size-8 rounded-full" />
             <span className="text-base font-semibold tracking-tight">GiftFlow</span>
             {ACTIVE.isTestnet ? (
               <span className="hidden rounded-full border px-2 py-0.5 text-[11px] font-medium sm:inline" style={{ borderColor: 'var(--border-strong)', color: 'var(--muted)' }}>
@@ -113,6 +111,10 @@ export function Layout({ children }: { children: ReactNode }) {
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-10">{children}</main>
       <footer className="border-t px-4 py-8 pb-20 text-center text-xs" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
+        <nav className="mb-3 flex items-center justify-center gap-4 text-sm" aria-label="Footer">
+          <Link to="/about" className="underline-offset-2 hover:underline">About</Link>
+          <Link to="/privacy" className="underline-offset-2 hover:underline">Privacy</Link>
+        </nav>
         <p>GiftFlow is non-custodial. Campaign funds sit in a smart contract on {ACTIVE.label}; there is no database or backend.</p>
         {ACTIVE.contract ? (
           <a className="mono mt-1 inline-block underline underline-offset-2" href={buildAddressExplorerUrl(ACTIVE.chainId, ACTIVE.contract)} target="_blank" rel="noopener noreferrer">

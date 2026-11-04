@@ -1,13 +1,13 @@
-import { createPublicClient, decodeEventLog, getAbiItem, http, pad, toEventSelector, toHex, type Address, type Hex } from 'viem'
+import { createPublicClient, decodeEventLog, getAbiItem, pad, toEventSelector, toHex, type Address, type Hex } from 'viem'
 import { arcTestnet } from 'viem/chains'
-import { requireChain } from '@/onchain-facts'
 import { flowAbi } from './abi'
 import { contractAddress, EVENT_WINDOW_BLOCKS } from './network'
+import { arcTransport } from './transport'
 
 /** Read-only client for reads, event scans and block lookups. */
 export const publicClient = createPublicClient({
   chain: arcTestnet,
-  transport: http(requireChain(arcTestnet.id).rpcUrls[0]),
+  transport: arcTransport(),
   batch: { multicall: true },
 })
 
@@ -171,8 +171,29 @@ export interface CampaignSetup {
   published?: FlowEvent
 }
 
-/** Find the creation event (and published recipient list) by estimating the block from createdAt. */
-export async function findSetup(campaignId: bigint, createdAt: bigint, deployBlock: bigint): Promise<CampaignSetup | undefined> {
+const setups = new Map<string, Promise<CampaignSetup | undefined>>()
+
+/**
+ * Find the creation event (and published recipient list) by estimating the block from createdAt.
+ * A campaign's setup events never change, so each lookup is done once per page load.
+ */
+export function findSetup(campaignId: bigint, createdAt: bigint, deployBlock: bigint): Promise<CampaignSetup | undefined> {
+  const key = campaignId.toString()
+  let hit = setups.get(key)
+  if (!hit) {
+    hit = searchSetup(campaignId, createdAt, deployBlock).then((found) => {
+      if (!found) setups.delete(key)
+      return found
+    }, (e: unknown) => {
+      setups.delete(key)
+      throw e
+    })
+    setups.set(key, hit)
+  }
+  return hit
+}
+
+async function searchSetup(campaignId: bigint, createdAt: bigint, deployBlock: bigint): Promise<CampaignSetup | undefined> {
   const c = await chainClock(deployBlock)
   const back = BigInt(Math.max(0, Math.round(Number(c.ts - createdAt) / c.perBlock)))
   const estimate = c.latest > back ? c.latest - back : deployBlock

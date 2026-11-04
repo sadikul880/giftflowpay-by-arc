@@ -9,6 +9,7 @@ GiftFlow lets Web3 projects, DAOs, hackathon organizers and communities run rewa
 - Campaigns with name, description, type, message, start time, claim deadline, public or private visibility
 - Recipients added one by one or imported from CSV (up to 1,000 public / 4,096 private in the app)
 - Atomic funding: `createCampaign` pulls the full USDC total, so allocations can never exceed what was deposited
+- Three payout modes: a wallet list (salaries, DAO payouts), one shared link with equal shares, or a secret code per person
 - Claim-based distribution (wallet-bound or link-based) and direct batch distribution by the organizer
 - Contract-enforced eligibility: Merkle proof, single-use claims, wallet binding, EIP-712 signatures for link-based claims
 - Refunds after expiry, cancellation before start, emergency pause that never traps funds
@@ -32,6 +33,7 @@ bun run dev
 bun run check            # lint + typecheck
 bun run build            # production build
 bun run contracts:build
+bun run test             # frontend unit tests
 bun run contracts:test   # 123 tests
 ```
 

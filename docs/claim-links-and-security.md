@@ -21,6 +21,14 @@ For public campaigns the contract rebuilds the whole tree from the published row
 
 For link-based recipients the organizer signs one free message (it names the contract, chain and a public per-campaign salt). `keccak256(signature)` is the campaign master secret, and each recipient's key is `keccak256(master, index)`. This lets the organizer regenerate every link later by signing again. Keys are never sent to a server and never appear in calldata or events; only the key's **address** is committed in the tree.
 
+## Payout modes (equal shares without wallets)
+
+The payout mode is stored in the public campaign metadata (`k`: `list`, `open` or `codes`) so the claim page knows what to show. It is a UI convention only; the contract sees ordinary link-based allocations.
+
+- **Open link.** Every share's claim key is `keccak256(master, index)`. The link carries the master secret, so any holder can derive the keys. The claim page picks a random free share (using `isClaimed`), signs the claim with that key for the connected wallet and submits it. If two people pick the same share, the second transaction reverts with `AlreadyClaimed` and the page picks another. The contract cannot tell two claims by the same wallet apart, so one person can take several shares with one link. Use secret codes when each person must get exactly one.
+- **Secret codes.** Code `i` is 12 characters from a 31-symbol alphabet (about 59 bits), derived from the master secret so the organizer can list the codes again later by signing. The claim key behind a code is `keccak256("giftflow:<campaign salt>:<code>")`. Leaf addresses are public, so an attacker could try to guess codes offline; 59 bits makes that impractical, which is why codes are generated and names are never used as secrets.
+- Both modes force a public campaign, because the claim page needs the published recipient list to find the share.
+
 ## Link formats
 
 All links are built with `buildShareLink()` (`src/lib/share.ts`).
@@ -30,6 +38,8 @@ All links are built with `buildShareLink()` (`src/lib/share.ts`).
 | Public, wallet-bound | `/claim/<id>?r=<wallet>` (an address, not a secret) |
 | Public, link-based | `/claim/<id>#k=<claim key>` |
 | Private (either kind) | `/claim/<id>#p=<payload>` with index, amount, account, optional key and the Merkle proof |
+| Open link (public campaign) | `/claim/<id>#m=<master secret>`: the holder can claim any free share |
+| Secret code (public campaign) | `/claim/<id>` plus a typed code, or `/claim/<id>#c=<code>` |
 
 Secrets live only in the URL **fragment**, which browsers never send to servers. Do not move them into the path or query.
 

@@ -1,4 +1,4 @@
-import { concat, encodePacked, hexToBytes, isAddress, keccak256, toHex, type Address, type Hex } from 'viem'
+import { concat, encodePacked, hexToBytes, isAddress, keccak256, stringToHex, toHex, type Address, type Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { parseUsdc } from '@/onchain-money'
 import { buildShareLink } from './share'
@@ -17,11 +17,21 @@ export const CAMPAIGN_TYPES = [
 
 export type CampaignTypeId = (typeof CAMPAIGN_TYPES)[number]['id']
 
+/**
+ * How recipients reach their share:
+ * - list: each row is a wallet (or a personal link), the default
+ * - open: one shared link; every holder claims one equal share until all shares are gone
+ * - codes: one campaign link plus a personal secret code per person
+ */
+export type DistMode = 'list' | 'open' | 'codes'
+
 export interface CampaignMeta {
   n: string
   d: string
   t: CampaignTypeId
   m: string
+  /** Distribution mode. Missing on older campaigns, which are always 'list'. */
+  k?: DistMode
 }
 
 export const LIMITS = {
@@ -51,6 +61,7 @@ export function decodeMeta(raw: string | undefined): CampaignMeta | undefined {
       d: typeof o.d === 'string' ? o.d.slice(0, LIMITS.description) : '',
       t,
       m: typeof o.m === 'string' ? o.m.slice(0, LIMITS.message) : '',
+      k: o.k === 'open' || o.k === 'codes' ? o.k : 'list',
     }
   } catch {
     return undefined
@@ -216,15 +227,33 @@ export const claimKey = (master: Hex, index: number): Hex => keccak256(encodePac
 export const keyAddress = (key: Hex): Address => privateKeyToAccount(key).address
 export const randomSalt = (): Hex => toHex(crypto.getRandomValues(new Uint8Array(32)))
 
+/* ---------- Secret codes (mode "codes") ---------- */
+
+// 31 symbols without 0, 1, O, I or L so codes survive being read aloud or retyped.
+const CODE_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'
+
+/** Personal code for one recipient, derived from the campaign master secret so the organizer can list it again later. */
+export function codeFor(master: Hex, index: number): string {
+  const bytes = hexToBytes(keccak256(encodePacked(['bytes32', 'uint32', 'string'], [master, index, 'code'])))
+  let out = ''
+  for (let i = 0; i < 12; i++) out += CODE_ALPHABET[bytes[i] % CODE_ALPHABET.length]
+  return `${out.slice(0, 4)}-${out.slice(4, 8)}-${out.slice(8)}`
+}
+
+export const normalizeCode = (code: string): string => code.toUpperCase().replace(/[^A-Z0-9]/g, '')
+
+/** Claim key behind a code. The campaign salt is public, so the code itself (about 59 bits) is the secret. */
+export const keyFromCode = (code: string, salt: Hex): Hex => keccak256(stringToHex(`giftflow:${salt}:${normalizeCode(code)}`))
+
 /** Turn rows into tree leaves. Rows without a wallet become link-based allocations owned by a derived key. */
-export function leavesFromRows(rows: RecipientRow[], master: Hex | undefined): Leaf[] {
+export function leavesFromRows(rows: RecipientRow[], master: Hex | undefined, keyOf?: (index: number) => Hex): Leaf[] {
   return rows.map((r, index) => {
     const amount = parseAmount(r.amount)
     if (amount === undefined) throw new Error(`Row ${index + 1} has an invalid amount`)
     const w = r.wallet.trim()
     if (w !== '') return { index, account: w as Address, amount, walletBound: true }
     if (!master) throw new Error('Claim keys are required for link-based recipients')
-    return { index, account: keyAddress(claimKey(master, index)), amount, walletBound: false }
+    return { index, account: keyAddress(keyOf ? keyOf(index) : claimKey(master, index)), amount, walletBound: false }
   })
 }
 
@@ -318,9 +347,21 @@ export async function claimLink(
   return leaf.walletBound ? `${base}?r=${leaf.account}` : `${base}#k=${opts.key}`
 }
 
-/** Parse a claim URL fragment: `#k=<key>` (public link-based) or `#p=<payload>` (private). */
-export function parseClaimHash(hash: string): { key?: Hex; payload?: ClaimPayload } {
+/** One link for everyone: whoever holds it can claim one share. The master secret rides in the #fragment only. */
+export async function openLink(campaignId: bigint, master: Hex): Promise<string> {
+  return `${await buildShareLink(`/claim/${campaignId}`)}#m=${master.slice(2)}`
+}
+
+/** Personal link that pre-fills a secret code. The code rides in the #fragment only. */
+export async function codeLink(campaignId: bigint, code: string): Promise<string> {
+  return `${await buildShareLink(`/claim/${campaignId}`)}#c=${normalizeCode(code)}`
+}
+
+/** Parse a claim URL fragment: `#k=<key>`, `#m=<master>` (open link), `#c=<code>` or `#p=<payload>` (private). */
+export function parseClaimHash(hash: string): { key?: Hex; master?: Hex; code?: string; payload?: ClaimPayload } {
   const h = hash.replace(/^#/, '')
+  if (h.startsWith('m=') && /^[0-9a-fA-F]{64}$/.test(h.slice(2))) return { master: `0x${h.slice(2)}` }
+  if (h.startsWith('c=') && /^[0-9A-Za-z]{12}$/.test(h.slice(2))) return { code: normalizeCode(h.slice(2)) }
   if (h.startsWith('k=') && /^[0-9a-fA-F]{64}$/.test(h.slice(2))) return { key: `0x${h.slice(2)}` }
   if (h.startsWith('p=')) {
     const payload = decodeClaimPayload(h.slice(2))

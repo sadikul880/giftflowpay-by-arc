@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Layout } from '@/components/Layout'
 import { DraftProvider } from '@/hooks/useDraft'
+import About from '@/pages/About'
 import Activity from '@/pages/Activity'
 import CampaignDetails from '@/pages/CampaignDetails'
 import Campaigns from '@/pages/Campaigns'
@@ -8,6 +9,7 @@ import Claim from '@/pages/Claim'
 import Create from '@/pages/Create'
 import Dashboard from '@/pages/Dashboard'
 import Landing from '@/pages/Landing'
+import Privacy from '@/pages/Privacy'
 import Recipients from '@/pages/Recipients'
 import Settings from '@/pages/Settings'
 import Verify from '@/pages/Verify'
@@ -30,6 +32,8 @@ export default function App() {
             <Route path="/verify/:id" element={<Verify />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<Landing />} />
           </Routes>
         </Layout>

@@ -65,7 +65,11 @@ No volumes, databases or other services are needed.
 
 ## RPC capacity
 
-The app reads logs from the public Arc RPC, which limits `eth_getLogs` to about 10,000 blocks per request (the app already windows its scans) and rate-limits bursts (HTTP 429). For a launch with many simultaneous claimants, use a dedicated RPC endpoint by changing `rpcUrls` for Arc Testnet in `src/onchain-facts.ts` (and the wagmi transport in `src/config.ts`), then rebuild.
+The app reads logs from the public Arc RPC, which limits `eth_getLogs` to about 10,000 blocks per request (the app already windows its scans) and rate-limits bursts (HTTP 429). The app sends concurrent requests as JSON-RPC batches and falls back to the other public Arc providers listed in viem's chain definition (`src/lib/transport.ts`) when one fails or rate-limits. For a launch with many simultaneous claimants, put a dedicated RPC endpoint first in that list (or in `rpcUrls` for Arc Testnet in `src/onchain-facts.ts`) and rebuild.
+
+## Security headers
+
+nginx sends `X-Content-Type-Options`, `Referrer-Policy: no-referrer`, a `Content-Security-Policy` limited to `frame-ancestors 'none'` (no framing, so no clickjacking of approve and claim buttons), and a restrictive `Permissions-Policy`. They live in `security-headers.inc`.
 
 ## Build memory
 

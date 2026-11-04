@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { ArrowRight, CheckCircle2, Gift } from 'lucide-react'
 import { AddressLink, ConfirmDialog, EmptyState, Notice, Skeleton, StateBadge, TxLink, WalletGate } from '@/components/ui'
 import { useCampaign, useNow, useWallet } from '@/hooks/useFlow'
+import { CodeEntry, OpenShare } from './ClaimModes'
 import { useTxAction } from '@/hooks/useTx'
 import { flowAbi } from '@/lib/abi'
 import type { CampaignView } from '@/lib/chain'
@@ -70,6 +71,7 @@ interface Allocation {
 /** Which allocations this visitor may claim, from the link they opened and the wallet they connected. */
 function findAllocations(view: CampaignView, wallet: Address | undefined, hash: { key?: Hex; payload?: ClaimPayload }): { items: Allocation[]; problem?: string } {
   const c = view.campaign
+  if (view.meta?.k === 'open' && !hash.key && !hash.payload) return { items: [], problem: 'This campaign uses one shared link. Open the full link you were sent, including the part after the # sign.' }
   if (hash.payload) {
     const p = hash.payload
     const leaf: Leaf = { index: p.index, account: p.account, amount: p.amount, walletBound: p.walletBound }
@@ -104,6 +106,8 @@ function ClaimCampaign({ campaignId }: { campaignId: bigint }) {
   const c = view.campaign
   const state = campaignState(c, now)
   const { items, problem } = findAllocations(view, w.address, hash)
+  const mode = view.meta?.k ?? 'list'
+  const special = hash.master ? 'open' : hash.code || mode === 'codes' ? 'codes' : undefined
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
@@ -131,9 +135,12 @@ function ClaimCampaign({ campaignId }: { campaignId: bigint }) {
         ))}
       </dl>
 
-      {problem ? <Notice tone="error">{problem}</Notice> : null}
+      {special === 'open' && hash.master ? <OpenShare view={view} master={hash.master} state={state} onClaimed={() => void q.refetch()} /> : null}
+      {special === 'codes' ? <CodeEntry view={view} initial={hash.code} state={state} onClaimed={() => void q.refetch()} /> : null}
 
-      {!problem && items.length === 0 ? (
+      {special ? null : problem ? <Notice tone="error">{problem}</Notice> : null}
+
+      {!special && !problem && items.length === 0 ? (
         w.address || hash.key ? (
           <Notice>
             {c.isPublic ? <>No allocation is listed for <span className="mono">{shortAddr(w.address ?? '')}</span>. Connect the wallet the organizer listed, or check the <Link to={`/verify/${campaignId}`} className="font-semibold underline">public recipient list</Link>.</> : 'No allocation found for this link.'}
@@ -146,14 +153,14 @@ function ClaimCampaign({ campaignId }: { campaignId: bigint }) {
         )
       ) : null}
 
-      {items.map((a) => (
+      {special ? null : items.map((a) => (
         <ClaimItem key={a.leaf.index} view={view} alloc={a} state={state} onClaimed={() => void q.refetch()} />
       ))}
     </div>
   )
 }
 
-function ClaimItem({ view, alloc, state, onClaimed }: { view: CampaignView; alloc: Allocation; state: ReturnType<typeof campaignState>; onClaimed: () => void }) {
+export function ClaimItem({ view, alloc, state, onClaimed, onFailed }: { view: CampaignView; alloc: Allocation; state: ReturnType<typeof campaignState>; onClaimed: () => void; onFailed?: () => void }) {
   const w = useWallet()
   const tx = useTxAction()
   const [open, setOpen] = useState(false)
@@ -203,6 +210,8 @@ function ClaimItem({ view, alloc, state, onClaimed }: { view: CampaignView; allo
       setDone(res)
       toast.success(`${fmtUsd(res.amount)} USDC claimed`)
       onClaimed()
+    } else {
+      onFailed?.()
     }
   }
 

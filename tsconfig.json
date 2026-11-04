@@ -19,6 +19,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "types": ["bun", "node", "react", "react-dom"],
     "paths": {
       "@/*": ["./src/*"],
       "viem/_types/*": ["./node_modules/viem/_types/*"]

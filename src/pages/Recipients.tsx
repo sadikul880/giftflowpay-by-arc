@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, Download, Link2, Send, Upload } from 'lucide-react'
 import { toast } from 'sonner'
 import { RecipientsTable } from '@/components/RecipientsTable'
-import { ConfirmDialog, EmptyState, Notice, PageHeader, Skeleton, Spinner, WalletGate } from '@/components/ui'
+import { ConfirmDialog, CopyButton, EmptyState, Notice, PageHeader, Skeleton, Spinner, WalletGate } from '@/components/ui'
 import { useCampaign, useClaimedFlags, useNow, useWallet } from '@/hooks/useFlow'
 import { useRecipientSource } from '@/hooks/useRecipients'
 import { useTxAction } from '@/hooks/useTx'
@@ -72,7 +72,7 @@ function Manage({ id }: { id: bigint }) {
 
   const exportLinks = () => {
     if (!src || !rec.links) return
-    const lines = ['index,label,wallet,amount_usdc,claim_link', ...src.leaves.map((l) => [l.index + 1, csvEscape(src.labels.get(l.index) ?? ''), l.walletBound ? l.account : '', fmtUsd(l.amount).replace(/,/g, ''), csvEscape(rec.links?.get(l.index) ?? '')].join(','))]
+    const lines = ['index,label,wallet,amount_usdc,code,claim_link', ...src.leaves.map((l) => [l.index + 1, csvEscape(src.labels.get(l.index) ?? ''), l.walletBound ? l.account : '', fmtUsd(l.amount).replace(/,/g, ''), rec.codes?.get(l.index) ?? '', csvEscape(rec.links?.get(l.index) ?? '')].join(','))]
     downloadText(`giftflow-campaign-${id}-claim-links.csv`, lines.join('\n'))
   }
 
@@ -124,6 +124,14 @@ function Manage({ id }: { id: bigint }) {
                   <Send className="size-4" /> Send directly to {pending.length} wallets
                 </button>
               </WalletGate>
+            </div>
+          ) : null}
+          {rec.shared ? (
+            <div className="card space-y-3 p-5">
+              <div className="label">Shared claim link</div>
+              <div className="inset mono break-all px-3.5 py-3 text-xs">{rec.shared}</div>
+              <p className="text-xs" style={{ color: 'var(--muted)' }}>Anyone with this link can claim one equal share until all are taken.</p>
+              <CopyButton value={rec.shared} label="Copy shared link" className="btn btn-primary" />
             </div>
           ) : null}
           {isOwner && !canDistribute && pending.length > 0 ? <p className="text-xs" style={{ color: 'var(--muted)' }}>Direct sending is available while claims are open.</p> : null}

@@ -19,6 +19,8 @@ Non-custodial USDC campaigns. An organizer deposits the whole total into `GiftFl
 - Link-based claim keys derive from the organizer's wallet signature over a message with a public salt; keys live only in the URL `#fragment`.
 - Campaign metadata (name, description, type, message) is public JSON in `CampaignCreated` (max 2048 bytes).
 - The Arc RPC rejects `eth_getLogs` ranges above about 10,000 blocks, so scans use 9,000-block windows (`EVENT_WINDOW_BLOCKS`) and never start before `DEPLOY_BLOCK`. The public RPC also returns 429 under heavy scans.
+- Payout modes live in campaign metadata (`k`: list, open, codes). Open link: `#m=<master>` in the URL fragment unlocks every equal share. Codes: 12-character code per person, key = keccak("giftflow:<salt>:<code>"). Both force public campaigns. Logic in `src/lib/flow.ts`, claim UI in `src/pages/ClaimModes.tsx`, tests in `src/lib/modes.test.ts`.
+- Arc RPC reads go through `src/lib/transport.ts` (batching and provider fallback).
 - `localStorage` holds UI preferences only.
 - `bun run e2e:testnet` is the live end-to-end check (needs `E2E_KEYS_FILE` with two throwaway wallets).
 
@@ -52,6 +54,7 @@ bun install
 bun run dev
 bun run check
 bun run build
+bun run test
 bun run contracts:test
 docker compose up -d --build
 ```

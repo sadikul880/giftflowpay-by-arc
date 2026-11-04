@@ -16,6 +16,7 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 | `/verify`, `/verify/:id` | `Verify` | Public verification page, no wallet needed |
 | `/activity` | `Activity` | Paginated event history |
 | `/settings` | `Settings` | Network facts, USDC balance and allowance (with revoke), UI preferences |
+| `/about`, `/privacy` | `About`, `Privacy` | What GiftFlow is and what data it does and does not touch |
 
 Campaign states shown in the UI are derived from contract data: `scheduled`, `active`, `completed`, `expired`, `cancelled`. A draft exists only in memory before the creation transaction (`useDraft`).
 
@@ -24,14 +25,14 @@ Campaign states shown in the UI are derived from contract data: `scheduled`, `ac
 ```
 src/
   main.tsx, App.tsx, config.ts   providers, routes, wagmi config
-  pages/                         one file per route
+  pages/                         one file per route (ClaimModes.tsx: open-link and secret-code claiming)
   components/                    layout, UI primitives, campaign parts, create steps
   hooks/
     useFlow.ts                   wallet, balance, allowance, campaign and global reads
     useTx.ts                     transaction runner: phases, confirmation, error handling
     useEventScanner.ts           windowed, paginated log scanning
     useRecipients.ts             organizer working copy of recipients, link generation
-    useDraft.tsx                 in-memory campaign draft
+    useDraft.tsx                 in-memory campaign draft, payout mode (list, open link, codes)
   lib/
     abi.ts                       GiftFlow ABI
     chain.ts                     campaign loading, claimed flags, integrity check
@@ -42,6 +43,7 @@ src/
     network.ts                   active network, contract address, scan window
     prefs.ts                     localStorage UI preferences
     share.ts                     share-link helpers
+    transport.ts                 Arc RPC transport: batching plus provider fallback
   onchain-facts.ts, onchain-money.ts, onchain-wait.ts   Arc chain facts and USDC/receipt helpers
 ```
 

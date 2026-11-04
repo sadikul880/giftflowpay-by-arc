@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import type { Hex } from 'viem'
 import { useSignMessage } from 'wagmi'
 import type { CampaignView } from '@/lib/chain'
-import { claimKey, claimLink, keyAddress, keyMessage, leavesFromRows, masterFromSignature, rowsFromCsv } from '@/lib/flow'
+import { claimKey, claimLink, codeFor, codeLink, keyAddress, keyFromCode, keyMessage, leavesFromRows, masterFromSignature, openLink, rowsFromCsv } from '@/lib/flow'
 import { explainError } from '@/lib/format'
 import { ACTIVE, contractAddress } from '@/lib/network'
 import { buildTree, proofFor, type Leaf, type SumTree } from '@/lib/tree'
@@ -21,6 +21,8 @@ export function useRecipientSource(view: CampaignView | undefined) {
   const { signMessageAsync } = useSignMessage()
   const [imported, setImported] = useState<RecipientSource>()
   const [links, setLinks] = useState<Map<number, string>>()
+  const [codes, setCodes] = useState<Map<number, string>>()
+  const [shared, setShared] = useState<string>()
   const [master, setMaster] = useState<Hex>()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string>()
@@ -44,13 +46,23 @@ export function useRecipientSource(view: CampaignView | undefined) {
     async (src: RecipientSource, m: Hex | undefined) => {
       if (!view) return
       const out = new Map<number, string>()
+      const outCodes = new Map<number, string>()
+      const mode = view.meta?.k ?? 'list'
+      const mismatch = 'This wallet cannot recreate the campaign\u2019s claim keys. Sign with the wallet that created the campaign.'
       for (const leaf of src.leaves) {
-        const key = !leaf.walletBound && m ? claimKey(m, leaf.index) : undefined
-        if (!leaf.walletBound && (!key || keyAddress(key).toLowerCase() !== leaf.account.toLowerCase())) {
-          throw new Error('This wallet cannot recreate the campaign\u2019s claim keys. Sign with the wallet that created the campaign.')
+        if (!leaf.walletBound && m && mode === 'codes' && view.salt) {
+          const code = codeFor(m, leaf.index)
+          if (keyAddress(keyFromCode(code, view.salt)).toLowerCase() !== leaf.account.toLowerCase()) throw new Error(mismatch)
+          outCodes.set(leaf.index, code)
+          out.set(leaf.index, await codeLink(view.id, code))
+          continue
         }
-        out.set(leaf.index, await claimLink(view.id, leaf, { isPublic: view.campaign.isPublic, key, proof: proofFor(src.tree, leaf.index) }))
+        const key = !leaf.walletBound && m ? claimKey(m, leaf.index) : undefined
+        if (!leaf.walletBound && (!key || keyAddress(key).toLowerCase() !== leaf.account.toLowerCase())) throw new Error(mismatch)
+        out.set(leaf.index, mode === 'open' && !leaf.walletBound ? '' : await claimLink(view.id, leaf, { isPublic: view.campaign.isPublic, key, proof: proofFor(src.tree, leaf.index) }))
       }
+      setShared(mode === 'open' && m ? await openLink(view.id, m) : undefined)
+      setCodes(outCodes)
       setLinks(out)
     },
     [view],
@@ -98,5 +110,5 @@ export function useRecipientSource(view: CampaignView | undefined) {
     [view, getMaster, buildLinks],
   )
 
-  return { source, links, busy, error, generateLinks, importCsv }
+  return { source, links, codes, shared, busy, error, generateLinks, importCsv }
 }

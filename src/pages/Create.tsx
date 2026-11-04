@@ -5,7 +5,7 @@ import { LaunchDone, type LaunchResult } from '@/components/create/LaunchResult'
 import { RecipientsStep } from '@/components/create/RecipientsStep'
 import { ReviewStep } from '@/components/create/ReviewStep'
 import { PageHeader, Pill } from '@/components/ui'
-import { useDraft } from '@/hooks/useDraft'
+import { draftPublic, draftRows, useDraft } from '@/hooks/useDraft'
 import { useNow } from '@/hooks/useFlow'
 import { checkRows, LIMITS } from '@/lib/flow'
 
@@ -33,7 +33,7 @@ export default function Create() {
   }
 
   const details = checkDetails(draft, now)
-  const rows = checkRows(draft.rows, draft.isPublic ? LIMITS.publicRecipients : LIMITS.privateRecipients)
+  const rows = checkRows(draftRows(draft), draftPublic(draft) ? LIMITS.publicRecipients : LIMITS.privateRecipients)
   const valid = [details.valid, rows.valid, true][step]
 
   return (
