@@ -1,6 +1,5 @@
 /**
  * wagmi configuration
- * Built with Arc Studio — https://studio.arc.io
  */
 
 import { http, createConfig, injected } from 'wagmi'

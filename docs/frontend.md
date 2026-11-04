@@ -59,4 +59,4 @@ src/
 
 One build-time variable: `VITE_GIFTFLOW_ADDRESS_TESTNET` (see [deployment.md](deployment.md)). Chain ID, RPC, explorer and USDC address come from `src/onchain-facts.ts`.
 
-The footer badge "Built with Arc Studio" in `src/main.tsx` and the `installShareSync()` call are inherited from the Arc Studio scaffold; `share.ts` only talks to a parent frame when the app is embedded inside Studio.
+The `installShareSync()` call in `src/main.tsx` and `src/lib/share.ts` come from the Arc Studio scaffold; they only talk to a parent frame when the app is embedded inside Studio.
