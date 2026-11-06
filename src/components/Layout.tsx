@@ -83,9 +83,9 @@ export function Layout({ children }: { children: ReactNode }) {
       <NetworkBanner />
       <header className="sticky top-0 z-30 border-b backdrop-blur" style={{ borderColor: 'var(--border)', background: 'rgba(248,248,246,0.92)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
-          <Link to="/" className="flex items-center gap-2" aria-label="GiftFlow home">
+          <Link to="/" className="flex items-center gap-2" aria-label="GiftFlowPay home">
             <img src="/logo.jpg" alt="" width={32} height={32} className="size-8 rounded-full" />
-            <span className="text-base font-semibold tracking-tight">GiftFlow</span>
+            <span className="text-base font-semibold tracking-tight">GiftFlowPay</span>
             {ACTIVE.isTestnet ? (
               <span className="hidden rounded-full border px-2 py-0.5 text-[11px] font-medium sm:inline" style={{ borderColor: 'var(--border-strong)', color: 'var(--muted)' }}>
                 {ACTIVE.label}
