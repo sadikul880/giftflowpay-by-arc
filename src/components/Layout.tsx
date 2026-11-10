@@ -1,5 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useOutlet } from 'react-router-dom'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ConnectKitButton } from 'connectkit'
 import { Activity, ArrowLeftRight, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, Menu, ReceiptText, Send, Settings, Trophy, TriangleAlert, Users, Waypoints, Wallet, X } from 'lucide-react'
 import { buildAddressExplorerUrl } from '@/onchain-facts'
@@ -8,6 +9,8 @@ import { fmtUsd, shortAddr } from '@/lib/format'
 import { useUsdcBalance, useWallet } from '@/hooks/useFlow'
 import { ErrorBoundary } from './ErrorBoundary'
 import { Skeleton, Spinner } from './ui'
+import { CursorFx } from './fx'
+import { SiteFooter } from './SiteFooter'
 
 const APP_NAV = [
   { to: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard, end: true },
@@ -105,7 +108,7 @@ function NetworkBanner() {
 function ScrollTop() {
   const { pathname } = useLocation()
   useEffect(() => {
-    window.scrollTo(0, 0)
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname])
   return null
 }
@@ -118,6 +121,37 @@ function PageFallback() {
       <Skeleton className="h-4 w-96 max-w-full" />
       <Skeleton className="h-64 w-full !rounded-2xl" />
     </div>
+  )
+}
+
+/**
+ * Fades the old page out and the new one in. The outlet element is captured per route, so the page that is leaving keeps
+ * its own content while it fades. Skipped for reduced motion.
+ */
+function PageTransition() {
+  const { pathname } = useLocation()
+  const outlet = useOutlet()
+  const reduce = useReducedMotion()
+  if (reduce) {
+    return (
+      <ErrorBoundary key={pathname}>
+        <Suspense fallback={<PageFallback />}>{outlet}</Suspense>
+      </ErrorBoundary>
+    )
+  }
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } }}
+        exit={{ opacity: 0, y: -8, filter: 'blur(4px)', transition: { duration: 0.16, ease: 'easeIn' } }}
+      >
+        <ErrorBoundary>
+          <Suspense fallback={<PageFallback />}>{outlet}</Suspense>
+        </ErrorBoundary>
+      </motion.div>
+    </AnimatePresence>
   )
 }
 
@@ -143,10 +177,10 @@ const publicLink = ({ isActive }: { isActive: boolean }) =>
 
 /** Marketing and recipient-facing pages: landing, about, privacy, claim and verify. No sidebar. */
 export function PublicLayout() {
-  const { pathname } = useLocation()
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col overflow-x-clip">
       <ScrollTop />
+      <CursorFx />
       <NetworkBanner />
       <header className="sticky top-0 z-30 border-b backdrop-blur" style={{ borderColor: 'var(--border)', background: 'rgba(5,10,8,0.82)' }}>
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
@@ -171,13 +205,9 @@ export function PublicLayout() {
         </nav>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-12">
-        <ErrorBoundary key={pathname}>
-          <Suspense fallback={<PageFallback />}>
-            <Outlet />
-          </Suspense>
-        </ErrorBoundary>
+        <PageTransition />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }
@@ -261,11 +291,7 @@ export function AppLayout() {
           </div>
         </header>
         <main className="w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-          <ErrorBoundary key={pathname}>
-            <Suspense fallback={<PageFallback />}>
-              <Outlet />
-            </Suspense>
-          </ErrorBoundary>
+          <PageTransition />
         </main>
         <Footer />
       </div>

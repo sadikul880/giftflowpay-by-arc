@@ -31,6 +31,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.5",
     "sonner": "^1.7.1",
+    "three": "^0.187.0",
     "viem": "2.57.5",
     "wagmi": "^2.19.5"
   },
@@ -44,6 +45,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "jsqr": "^1.4.0",

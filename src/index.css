@@ -268,3 +268,127 @@ button:focus-visible {
 .table tr:last-child td {
   border-bottom: none;
 }
+
+/* ---------- Premium effects (landing and public pages) ---------- */
+
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(52, 240, 138, 0.55);
+  background: radial-gradient(circle, rgba(52, 240, 138, 0.08), transparent 70%);
+  backdrop-filter: blur(1.5px);
+  transition: opacity 0.25s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.cursor-ring[data-state='link'] {
+  border-color: rgba(52, 240, 138, 0.9);
+  background: rgba(52, 240, 138, 0.14);
+}
+.cursor-ring[data-state='field'] {
+  border-color: rgba(52, 240, 138, 0.35);
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+
+/* A light that follows the mouse over a card. --mx and --my are set by SpotCard. */
+.spot {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.spot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgba(52, 240, 138, 0.16), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.spot:hover::before {
+  opacity: 1;
+}
+
+.text-gradient {
+  background: linear-gradient(95deg, #eaf4ee 0%, #7dffb4 45%, #34f08a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grid-fade {
+  background-image:
+    linear-gradient(rgba(52, 240, 138, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52, 240, 138, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .cursor-ring,
+  .cursor-dot {
+    display: none;
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  .cursor-ring,
+  .cursor-dot {
+    display: none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

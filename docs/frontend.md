@@ -6,7 +6,7 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 
 | Route | Page | Purpose |
 | --- | --- | --- |
-| `/` | `Landing` | Product overview and live contract totals |
+| `/` | `Landing` | Product overview: 3D hero, use cases, payout modes, product tour, trust, FAQ, live contract totals |
 | `/dashboard` | `Dashboard` | Wallet overview: campaigns, funded, distributed, pending, unclaimed, USDC balance |
 | `/campaigns` | `Campaigns` | List of campaigns with status |
 | `/gifts` | `Gifts` | Your gift cards; each opens its details page (refund, and link, QR, code and PNG again by signing) |
@@ -64,6 +64,16 @@ src/
     transport.ts                 Arc RPC transport: batching plus provider fallback
   onchain-facts.ts, onchain-money.ts, onchain-wait.ts   Arc chain facts and USDC/receipt helpers
 ```
+
+## Landing page effects
+
+The public pages feel premium without slowing the app down. Everything here is decoration: nothing is needed to use the product, and each effect switches itself off when it should.
+
+- **3D hero** (`components/Hero3D.tsx`, `lib/heroScene.ts`): a three.js scene with a reflective gift card, floating USDC coins and sparks that follows the pointer. The `three` code is a separate lazy chunk (about 580 kB, loaded only on the landing page), so the app pages do not pay for it. It pauses when scrolled away or when the tab is hidden, shows one still frame for `prefers-reduced-motion`, releases the WebGL context on unmount, and falls back to the CSS `HeroCard` when WebGL is missing or the chunk fails.
+- **Cursor** (`components/fx.tsx`): a ring and dot that trail the mouse and grow over links and buttons. Only for `(hover: hover) and (pointer: fine)` without reduced motion; the native cursor is never hidden. Main buttons are magnetic and cards carry a light that follows the mouse.
+- **Page transitions** (`PageTransition` in `components/Layout.tsx`): the old page fades out and the new one fades in (framer-motion `AnimatePresence`), in both shells. Reduced motion renders the page directly.
+- **Footer** (`components/SiteFooter.tsx`): brand, product and resource links, live network and contract link, the product promises and a back-to-top button.
+- Shared math (damping, magnetism, pointer mapping) lives in `lib/motion.ts` with tests in `lib/motion.test.ts`. The landing screenshots are `public/landing/*.webp`.
 
 ## Wallet and transaction handling
 
