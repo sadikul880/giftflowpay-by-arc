@@ -9,6 +9,7 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 | `/` | `Landing` | Product overview and live contract totals |
 | `/dashboard` | `Dashboard` | Wallet overview: campaigns, funded, distributed, pending, unclaimed, USDC balance |
 | `/campaigns` | `Campaigns` | List of campaigns with status |
+| `/gifts` | `Gifts` | Your gift cards; each opens its details page (refund, and link, QR, code and PNG again by signing) |
 | `/rewards` | `Rewards` | Reward campaign starting points and your latest campaigns |
 | `/transactions` | `Transactions` | Wallet history from the explorer index: labelled transactions and token transfers |
 | `/swap` | `Swap` | Swap on Arc Testnet through Circle App Kit, live quote before signing |
@@ -50,6 +51,7 @@ src/
     tree.ts                      Merkle sum tree (matches the contract)
     format.ts                    USDC formatting, error explanations
     network.ts                   active network, contract address, scan window
+    ErrorBoundary (components/)  keeps one crashed page from blanking the app; asks for a reload after a release
     explorerApi.ts               explorer API client, parsing, transaction labels
     rewards.ts                   reward campaign presets
     appkit.ts                    lazy Circle App Kit loader, wallet adapter, error messages

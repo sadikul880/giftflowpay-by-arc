@@ -14,6 +14,7 @@ const Claim = lazy(() => import('@/pages/Claim'))
 const Create = lazy(() => import('@/pages/Create'))
 const Dashboard = lazy(() => import('@/pages/Dashboard'))
 const GiftCreate = lazy(() => import('@/pages/GiftCreate'))
+const Gifts = lazy(() => import('@/pages/Gifts'))
 const Payroll = lazy(() => import('@/pages/Payroll'))
 const Privacy = lazy(() => import('@/pages/Privacy'))
 const Recipients = lazy(() => import('@/pages/Recipients'))
@@ -43,6 +44,7 @@ export default function App() {
           {/* The product: sidebar shell for organizers. */}
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/gifts" element={<Gifts />} />
             <Route path="/gifts/new" element={<GiftCreate />} />
             <Route path="/send" element={<SendPayment />} />
             <Route path="/payroll" element={<Payroll />} />

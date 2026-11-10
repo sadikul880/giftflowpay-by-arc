@@ -6,11 +6,12 @@ import { buildAddressExplorerUrl } from '@/onchain-facts'
 import { ACTIVE } from '@/lib/network'
 import { fmtUsd, shortAddr } from '@/lib/format'
 import { useUsdcBalance, useWallet } from '@/hooks/useFlow'
+import { ErrorBoundary } from './ErrorBoundary'
 import { Skeleton, Spinner } from './ui'
 
 const APP_NAV = [
   { to: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard, end: true },
-  { to: '/gifts/new', label: 'Gift cards', Icon: Gift, end: true },
+  { to: '/gifts', label: 'Gift cards', Icon: Gift, end: false },
   { to: '/send', label: 'Send payment', Icon: Send, end: true },
   { to: '/payroll', label: 'Payroll', Icon: Users, end: true },
   { to: '/rewards', label: 'Rewards', Icon: Trophy, end: true },
@@ -142,6 +143,7 @@ const publicLink = ({ isActive }: { isActive: boolean }) =>
 
 /** Marketing and recipient-facing pages: landing, about, privacy, claim and verify. No sidebar. */
 export function PublicLayout() {
+  const { pathname } = useLocation()
   return (
     <div className="flex min-h-dvh flex-col">
       <ScrollTop />
@@ -169,11 +171,11 @@ export function PublicLayout() {
         </nav>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-12">
-        <Suspense fallback={<PageFallback />}>
+        <ErrorBoundary key={pathname}>
           <Suspense fallback={<PageFallback />}>
             <Outlet />
           </Suspense>
-        </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
     </div>
@@ -259,9 +261,11 @@ export function AppLayout() {
           </div>
         </header>
         <main className="w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-          <Suspense fallback={<PageFallback />}>
-            <Outlet />
-          </Suspense>
+          <ErrorBoundary key={pathname}>
+            <Suspense fallback={<PageFallback />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
         </main>
         <Footer />
       </div>

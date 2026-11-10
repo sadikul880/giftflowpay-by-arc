@@ -6,6 +6,8 @@ GiftFlow lets Web3 projects, DAOs, hackathon organizers and communities run rewa
 
 ## Features
 
+- Status of every requested feature, including what is not built: [docs/feature-status.md](docs/feature-status.md)
+
 undefined Campaigns with name, description, type, message, start time, claim deadline, public or private visibility
 - undefinedecipients added one by one or imported from CSV undefinedup to 1,000 public / 4,096 private in the appundefined
 - Atomic funding: `createCampaign` pulls the full USDC total, so allocations can never exceed what was deposited

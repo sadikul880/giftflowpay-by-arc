@@ -13,7 +13,9 @@ GiftFlow is a non-custodial USDC distribution platform on Arc. An organizer crea
 | [deployment.md](deployment.md) | Arc Testnet deployment, environment variables, Docker and Coolify |
 | [testing.md](testing.md) | Contract tests, frontend checks, live end-to-end script |
 | [audit.md](audit.md) | Findings, fixes and known limits from the latest review |
-| [presentation/](presentation/GiftFlow-presentation.pptx) | 15-slide project presentation (PowerPoint and PDF) with screenshots of the running app |
+| [presentation/](presentation/GiftFlow-presentation.pptx) | 16-slide project presentation (PowerPoint and PDF) with screenshots of the running app |
+| [feature-status.md](feature-status.md) | Every requested feature: done, partial or not built, with the reason |
+| [mainnet-readiness.md](mainnet-readiness.md) | Checklist for going live on mainnet (not configured yet) |
 | [roadmap.md](roadmap.md) | How the design leaves room for vesting, milestones and attestations |
 
 ## Quick facts

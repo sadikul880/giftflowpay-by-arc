@@ -60,7 +60,7 @@ Each needs reentrancy protection, access control, pause, no unrestricted admin w
 | 4 | Swap and bridge | Done for the routes Circle verifies on Arc Testnet, see the Phase 4 report. No kit key was needed |
 | 5 | Rewards, company, transactions | Rewards and transactions done; company management is blocked on a product decision, see the Phase 5 report |
 | 6 | Security, testing, optimization | Done, see the Phase 6 report and `docs/audit.md` |
-| 7 | Mainnet readiness | Audit first, then explicit approval |
+| 7 | Mainnet readiness | Checklist written ([mainnet-readiness.md](mainnet-readiness.md)); mainnet itself waits for your decision, an audit and official Arc mainnet USDC details |
 
 ## Phase 2 report: gift cards
 

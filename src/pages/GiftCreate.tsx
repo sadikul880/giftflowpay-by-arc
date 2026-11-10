@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { erc20Abi, isAddress, parseEventLogs, type Address, type Hex } from 'viem'
 import { useSignMessage } from 'wagmi'
-import { CheckCircle2, Download, Gift, KeyRound, Link2, Lock, Wallet } from 'lucide-react'
+import { CheckCircle2, Gift, KeyRound, Link2, Lock, Wallet } from 'lucide-react'
 import QRCode from 'qrcode'
 import { toast } from 'sonner'
 import { GiftCardArt } from '@/components/GiftCardArt'
-import { ConfirmDialog, CopyButton, Notice, PageHeader, Spinner, StepList, TxLink, WalletGate, type StepStatus } from '@/components/ui'
+import { GiftShare, type GiftShareData } from '@/components/GiftShare'
+import { ConfirmDialog, Notice, PageHeader, Spinner, StepList, TxLink, WalletGate, type StepStatus } from '@/components/ui'
 import { useAllowance, useGlobals, useNow, useUsdcBalance, useWallet } from '@/hooks/useFlow'
 import { useTxAction } from '@/hooks/useTx'
 import { flowAbi } from '@/lib/abi'
@@ -23,7 +24,6 @@ import {
   type GiftDesignId,
   type GiftMethod,
 } from '@/lib/gift'
-import { downloadBlob, renderGiftPng } from '@/lib/giftPng'
 import { ACTIVE, contractAddress } from '@/lib/network'
 import { buildShareLink } from '@/lib/share'
 import { buildTree } from '@/lib/tree'
@@ -35,22 +35,9 @@ const METHODS: Array<{ id: GiftMethod; title: string; body: string; Icon: typeof
   { id: 'link', title: 'Anyone with the link', body: 'Whoever opens the link or scans its QR can claim. Share it privately.', Icon: Link2, note: 'The link and its QR are the secret. The image carries no QR.' },
 ]
 
-interface GiftResult {
-  id: bigint
+interface GiftResult extends GiftShareData {
   txHash: string
-  method: GiftMethod
-  amount: string
-  from: string
-  to: string
-  message: string
-  design: GiftDesignId
   expiresAt: number
-  claimPage: string
-  /** What the QR and the copy button share: the claim page, or for link gifts the private link. */
-  shareLink: string
-  code?: string
-  wallet?: Address
-  qr: string
 }
 
 type Stage = 'idle' | 'key' | 'approve' | 'create'
@@ -163,7 +150,7 @@ export default function GiftCreate() {
         claimPage,
         shareLink,
         code: plan.code,
-        wallet: method === 'wallet' ? (wallet.trim() as Address) : undefined,
+        wallet: method === 'wallet' ? wallet.trim() : undefined,
         qr: await QRCode.toDataURL(shareLink, qrOptions),
       } satisfies GiftResult
     })
@@ -321,33 +308,6 @@ export default function GiftCreate() {
 }
 
 function GiftDone({ result, onAnother }: { result: GiftResult; onAnother: () => void }) {
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string>()
-  const isLink = result.method === 'link'
-
-  async function download() {
-    setBusy(true)
-    setError(undefined)
-    try {
-      const blob = await renderGiftPng({
-        design: result.design,
-        amount: result.amount,
-        from: result.from,
-        to: result.to,
-        message: result.message,
-        // A link gift's QR is the secret itself, so its image carries none.
-        qrDataUrl: isLink ? undefined : result.qr,
-        qrCaption: isLink ? undefined : result.claimPage.replace(/^https?:\/\//, ''),
-        footnote: isLink ? 'Your sender will share the private claim link with you.' : undefined,
-      })
-      downloadBlob(blob, `giftflowpay-gift-${result.id}.png`)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not create the image')
-    } finally {
-      setBusy(false)
-    }
-  }
-
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div className="flex items-start gap-3">
@@ -360,38 +320,9 @@ function GiftDone({ result, onAnother }: { result: GiftResult; onAnother: () => 
         </div>
       </div>
 
-      <GiftCardArt design={result.design} amount={result.amount} from={result.from} to={result.to} message={result.message} />
+      <GiftShare data={result} />
 
-      {result.method === 'code' && result.code ? (
-        <section className="card space-y-3 p-5">
-          <div className="label">Secret code</div>
-          <div className="inset mono px-4 py-3 text-2xl tracking-widest">{result.code}</div>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>Send this code to the recipient in a different message from the link or image. Anyone with both can claim the gift. You can get the code again from this campaign&rsquo;s Recipients page by signing with this wallet.</p>
-          <CopyButton value={result.code} label="Copy code" className="btn btn-secondary" />
-        </section>
-      ) : null}
-
-      {isLink ? <Notice tone="warn">This link and its QR code contain the claim secret. Anyone who has them can claim the gift, so share them only with the recipient. The downloaded image has no QR for that reason.</Notice> : null}
-      {result.method === 'wallet' ? <Notice>Only {shortAddr(result.wallet ?? '')} can claim this gift. The link and QR hold no secret.</Notice> : null}
-
-      <section className="card grid gap-6 p-5 sm:grid-cols-[220px_1fr]">
-        <div className="space-y-2">
-          <img src={result.qr} alt="QR code that opens the claim page" width={220} height={220} className="rounded-xl bg-white p-2" />
-          <p className="text-center text-xs" style={{ color: 'var(--muted)' }}>{isLink ? 'Private: contains the claim secret' : 'Opens the claim page'}</p>
-        </div>
-        <div className="space-y-3">
-          <div className="label">{isLink ? 'Private claim link' : 'Claim link'}</div>
-          <div className="inset mono break-all px-3.5 py-3 text-xs">{result.shareLink}</div>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>The link and the QR open the same claim page.</p>
-          <div className="flex flex-wrap gap-2">
-            <CopyButton value={result.shareLink} label="Copy link" className="btn btn-primary" />
-            <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => void download()}>
-              {busy ? <Spinner /> : <Download className="size-4" />} Download gift card (PNG)
-            </button>
-          </div>
-          {error ? <p className="text-sm" style={{ color: 'var(--danger)' }}>{error}</p> : null}
-        </div>
-      </section>
+      <p className="text-xs" style={{ color: 'var(--muted)' }}>You can open this gift again later from Gift cards: sign with this wallet to get the code, link, QR and image back.</p>
 
       <div className="flex flex-wrap gap-2">
         <Link to={`/campaigns/${result.id}`} className="btn btn-secondary">Manage gift</Link>

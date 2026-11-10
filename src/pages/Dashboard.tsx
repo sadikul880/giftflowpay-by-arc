@@ -1,16 +1,18 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { ArrowLeftRight, ArrowRight, ExternalLink, Gift, HandCoins, Plus, ReceiptText, Send, Trophy, Users, Waypoints } from 'lucide-react'
 import { CampaignRow } from '@/components/CampaignRow'
 import { HeroCard } from '@/components/HeroCard'
 import { ConnectWalletButton, CopyButton, EmptyState, Skeleton, Stat } from '@/components/ui'
 import { useCampaignPages, useGlobals, useNow, useUsdcBalance, useWallet } from '@/hooks/useFlow'
 import { useToken } from '@/hooks/useToken'
+import { fetchTransactions, labelTx } from '@/lib/explorerApi'
 import { ARC_EURC, BASE_SEPOLIA_USDC, fmtToken } from '@/lib/tokens'
 import { campaignState, remainingOf } from '@/lib/flow'
 import { fmtUsd, shortAddr } from '@/lib/format'
 import { ACTIVE } from '@/lib/network'
-import { buildAddressExplorerUrl } from '@/onchain-facts'
+import { buildAddressExplorerUrl, buildTxExplorerUrl } from '@/onchain-facts'
 
 function OtherBalances({ owner }: { owner: `0x${string}` }) {
   const eurc = useToken(ARC_EURC, owner)
@@ -72,6 +74,41 @@ function WalletPanel() {
           </div>
           <OtherBalances owner={w.address} />
         </>
+      )}
+    </section>
+  )
+}
+
+function RecentTransactions({ owner }: { owner: string }) {
+  const q = useQuery({ queryKey: ['recent-txs', owner], queryFn: () => fetchTransactions(owner), retry: 1, staleTime: 30000 })
+  const rows = q.data?.items.slice(0, 5) ?? []
+  return (
+    <section className="space-y-3" aria-label="Recent transactions">
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-semibold">Recent transactions</h2>
+        <Link to="/transactions" className="text-sm font-medium underline-offset-2 hover:underline" style={{ color: 'var(--green)' }}>View all</Link>
+      </div>
+      {q.isLoading ? (
+        <div className="space-y-2">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-11 w-full" />)}</div>
+      ) : q.isError ? (
+        <EmptyState title="History unavailable" body="The explorer did not answer. Your funds are not affected; try again in a moment." action={<button type="button" className="btn btn-secondary" onClick={() => void q.refetch()}>Try again</button>} />
+      ) : rows.length === 0 ? (
+        <EmptyState title="No transactions yet" body="Your wallet has no activity on Arc Testnet yet." />
+      ) : (
+        <div className="table-wrap">
+          <table className="table">
+            <tbody>
+              {rows.map((t) => (
+                <tr key={t.hash}>
+                  <td className="font-medium">{labelTx(t).label}</td>
+                  <td className="whitespace-nowrap text-xs" style={{ color: 'var(--muted)' }}>{t.timestamp ? new Date(t.timestamp * 1000).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '-'}</td>
+                  <td><span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ color: t.ok ? 'var(--green)' : 'var(--danger)', background: t.ok ? 'var(--green-soft)' : 'rgba(255,107,129,0.14)' }}>{t.ok ? 'Confirmed' : 'Failed'}</span></td>
+                  <td className="text-right"><a href={buildTxExplorerUrl(ACTIVE.chainId, t.hash)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs underline underline-offset-2" style={{ color: 'var(--green)' }}>{shortAddr(t.hash)} <ExternalLink className="size-3" /></a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   )
@@ -195,6 +232,8 @@ export default function Dashboard() {
           </div>
         </section>
       ) : null}
+
+      {w.address ? <RecentTransactions owner={w.address} /> : null}
 
       {w.isConnected ? (
         <section className="space-y-3">

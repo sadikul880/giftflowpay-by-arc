@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, ExternalLink, Users } from 'lucide-react'
 import { CampaignSummary } from '@/components/CampaignParts'
 import { EventFeed } from '@/components/EventFeed'
+import { GiftRecover } from '@/components/GiftRecover'
 import { OrganizerActions } from '@/components/OrganizerActions'
 import { CopyButton, EmptyState, Skeleton, TxLink } from '@/components/ui'
 import { useCampaign, useNow, useWallet } from '@/hooks/useFlow'
@@ -32,18 +33,19 @@ function Details({ id }: { id: bigint }) {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <Link to="/campaigns" className="inline-flex items-center gap-1.5 text-sm font-medium" style={{ color: 'var(--muted)' }}>
-        <ArrowLeft className="size-4" /> Campaigns
+      <Link to={view.meta?.g ? '/gifts' : '/campaigns'} className="inline-flex items-center gap-1.5 text-sm font-medium" style={{ color: 'var(--muted)' }}>
+        <ArrowLeft className="size-4" /> {view.meta?.g ? 'Gift cards' : 'Campaigns'}
       </Link>
 
       <div className="flex flex-wrap gap-2">
-        <Link to={`/campaigns/${id}/recipients`} className="btn btn-secondary"><Users className="size-4" /> Recipients</Link>
+        {view.meta?.g ? null : <Link to={`/campaigns/${id}/recipients`} className="btn btn-secondary"><Users className="size-4" /> Recipients</Link>}
         <Link to={`/verify/${id}`} className="btn btn-secondary"><ExternalLink className="size-4" /> Public verification page</Link>
         {c.isPublic ? <CopyButton value={claimUrl} label="Copy claim page link" disabled={!claimUrl} /> : null}
       </div>
 
       <CampaignSummary view={view} now={now} />
       {isOwner ? <OrganizerActions view={view} now={now} onChanged={() => void q.refetch()} /> : null}
+      {isOwner && view.meta?.g ? <GiftRecover view={view} /> : null}
 
       {view.setup ? (
         <p className="text-sm" style={{ color: 'var(--muted)' }}>

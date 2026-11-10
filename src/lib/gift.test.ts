@@ -4,7 +4,7 @@ import QRCode from 'qrcode'
 import { recoverTypedDataAddress, type Address, type Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { CLAIM_TYPES, codeFor, decodeMeta, encodeMeta, encodePublished, decodePublished, keyAddress, keyFromCode, metaBytes, openLink, parseClaimHash } from './flow'
-import { GIFT_DESIGNS, GIFT_MODE, giftDesign, giftPlan, wrapLines } from './gift'
+import { GIFT_DESIGNS, GIFT_MODE, giftDesign, giftPlan, methodFromMode, recoverGift, wrapLines } from './gift'
 import { buildTree, proofFor, verifyProof } from './tree'
 
 // share.ts reads the page origin; a top-level window gives it the same answer as a normal browser tab.
@@ -142,5 +142,31 @@ describe('text wrapping for the PNG', () => {
 
   test('keeps explicit line breaks', () => {
     expect(wrapLines('hi\nthere', 200, measure)).toEqual(['hi', 'there'])
+  })
+})
+
+describe('recovering a gift later', () => {
+  test('the funding wallet signature rebuilds the same code and key', () => {
+    const made = giftPlan('code', amount, { master, salt })
+    const back = recoverGift('code', made.leaf, master, salt)
+    expect(back.code).toBe(made.code)
+    expect(back.key).toBe(made.key)
+    const link = giftPlan('link', amount, { master, salt })
+    expect(recoverGift('link', link.leaf, master, salt).key).toBe(link.key)
+  })
+
+  test('a different wallet cannot rebuild it', () => {
+    const made = giftPlan('code', amount, { master, salt })
+    const other = ('0x' + '99'.repeat(32)) as Hex
+    expect(() => recoverGift('code', made.leaf, other, salt)).toThrow('cannot recreate')
+    expect(() => recoverGift('link', giftPlan('link', amount, { master, salt }).leaf, other, salt)).toThrow()
+  })
+
+  test('wallet gifts need no secret and modes map back to methods', () => {
+    expect(recoverGift('wallet', giftPlan('wallet', amount, { wallet }).leaf, master, salt)).toEqual({})
+    expect(methodFromMode('codes')).toBe('code')
+    expect(methodFromMode('open')).toBe('link')
+    expect(methodFromMode('list')).toBe('wallet')
+    expect(methodFromMode(undefined)).toBe('wallet')
   })
 })

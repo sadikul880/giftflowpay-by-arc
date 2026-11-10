@@ -55,7 +55,7 @@ Open **Gift cards** in the sidebar. Choose an amount and design, write the names
 - **Specific wallet**: only the wallet you enter can claim. The link and QR are safe to share publicly.
 - **Anyone with the link**: whoever opens the link or scans its QR can claim, so share it only with the recipient. The PNG does not include a QR for this method.
 
-If nobody claims the gift before it expires, refund it from the campaign page.
+If nobody claims the gift before it expires, refund it from the gift's page. **Gift cards** in the sidebar lists every gift you sent; open one and press **Show link, QR and card** to sign with the funding wallet and get the link, secret code, QR code and card image back at any time. Nothing is stored: the same signature that created the gift recreates its secrets.
 
 ## Recipients
 

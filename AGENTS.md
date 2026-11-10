@@ -12,6 +12,10 @@ Non-custodial USDC campaigns. An organizer deposits the whole total into `GiftFl
 - Mainnet: intentionally not configured. Add only after an explicit decision; deploy from the operator's own wallet.
 - Redeploy with `OWNER_ADDRESS=0x... FORGE_ACCOUNT=<keystore> bun run deploy:testnet`.
 
+## Product map
+
+Public site (`PublicLayout`): landing, about, privacy, claim, verify. App (`AppLayout`): dashboard, gift cards (`/gifts`, `/gifts/new`), send payment, payroll, rewards, transactions, swap, bridge, campaigns, contract activity, settings. Gifts and payroll are one-recipient and wallet-list campaigns on the same contract, distinguished by the public metadata (`t`: gift, payroll; `k`: list, open, codes; `g`: gift details). Status of every requested feature, with the open items (company management, recurring payroll, embedded-wallet login, WalletConnect, cirBTC, mainnet, audit): `docs/feature-status.md`.
+
 ## Design notes
 
 - One contract; campaigns are storage entries. Public campaigns publish recipient rows in `RecipientsPublished` and the contract re-derives the sum tree; private campaigns publish nothing, so the organizer must keep the CSV.
@@ -22,7 +26,7 @@ Non-custodial USDC campaigns. An organizer deposits the whole total into `GiftFl
 - Payout modes live in campaign metadata (`k`: list, open, codes). Open link: `#m=<master>` in the URL fragment unlocks every equal share. Codes: 12-character code per person, key = keccak("giftflow:<salt>:<code>"). Both force public campaigns. Logic in `src/lib/flow.ts`, claim UI in `src/pages/ClaimModes.tsx`, tests in `src/lib/modes.test.ts`.
 - Arc RPC reads go through `src/lib/transport.ts` (batching and provider fallback).
 - `localStorage` holds UI preferences only.
-- `bun run e2e:testnet` is the live end-to-end check (needs `E2E_KEYS_FILE` with two throwaway wallets).
+- `bun run e2e:local` runs the app libraries against the real contract on Anvil (Docker); `bun run e2e:testnet` is the live testnet check (needs `E2E_KEYS_FILE` with two throwaway wallets).
 
 ## Tech stack
 

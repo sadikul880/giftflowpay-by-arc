@@ -110,3 +110,19 @@ export function wrapLines(text: string, maxWidth: number, measure: (s: string) =
   kept[maxLines - 1] = `${kept[maxLines - 1].replace(/[\s.,;:!?-]+$/, '')}…`
   return kept
 }
+
+/** The gift method implied by a campaign's stored payout mode. */
+export const methodFromMode = (mode: DistMode | undefined): GiftMethod => (mode === 'codes' ? 'code' : mode === 'open' ? 'link' : 'wallet')
+
+/**
+ * Rebuild a gift's secret from the funding wallet's signature (the same one that created it).
+ * Throws if the result does not match the allocation committed onchain, which means the wrong wallet signed.
+ */
+export function recoverGift(method: GiftMethod, leaf: Leaf, master: Hex, salt: Hex): { key?: Hex; code?: string } {
+  if (method === 'wallet') return {}
+  const plan = giftPlan(method, leaf.amount, { master, salt })
+  if (plan.leaf.account.toLowerCase() !== leaf.account.toLowerCase()) {
+    throw new Error('This wallet cannot recreate the gift. Sign with the wallet that funded it.')
+  }
+  return { key: plan.key, code: plan.code }
+}
