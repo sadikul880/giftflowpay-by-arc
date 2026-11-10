@@ -9,6 +9,7 @@ GiftFlow lets Web3 projects, DAOs, hackathon organizers and communities run rewa
 - Campaigns with name, description, type, message, start time, claim deadline, public or private visibility
 - Recipients added one by one or imported from CSV (up to 1,000 public / 4,096 private in the app)
 - Atomic funding: `createCampaign` pulls the full USDC total, so allocations can never exceed what was deposited
+- Gift cards: fund a USDC gift, share it by link or QR code, download a branded PNG, claim by secret code, named wallet or link
 - Three payout modes: a wallet list (salaries, DAO payouts), one shared link with equal shares, or a secret code per person
 - Claim-based distribution (wallet-bound or link-based) and direct batch distribution by the organizer
 - Contract-enforced eligibility: Merkle proof, single-use claims, wallet binding, EIP-712 signatures for link-based claims

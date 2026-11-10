@@ -23,6 +23,16 @@ You need an EVM wallet (for example MetaMask) on Arc Testnet and some testnet US
 
 Private campaigns: the recipient list is not stored onchain. Keep the CSV you funded with. To manage the campaign later, load the same CSV (same order and amounts) on the Recipients page; it is accepted only if it reproduces the onchain commitment.
 
+## Gift cards
+
+Open **Gift cards** in the sidebar. Choose an amount and design, write the names and message, pick how the recipient claims and how long the gift stays open, then fund it. Success, the link, the QR code and the downloadable PNG appear only after the network confirms the funding transaction.
+
+- **Secret code**: send the claim link (or QR or PNG) and, in a separate message, the code. The recipient opens the link, types the code, connects a wallet and claims.
+- **Specific wallet**: only the wallet you enter can claim. The link and QR are safe to share publicly.
+- **Anyone with the link**: whoever opens the link or scans its QR can claim, so share it only with the recipient. The PNG does not include a QR for this method.
+
+If nobody claims the gift before it expires, refund it from the campaign page.
+
 ## Recipients
 
 1. Open your claim link. For a wallet-bound allocation, connect the exact wallet the organizer listed. For a secret-code campaign, type your code (or use the personal link that fills it in). For a shared link, just open it. You need a small USDC balance in your wallet to pay the network fee, because Arc uses USDC for gas.

@@ -29,6 +29,10 @@ The payout mode is stored in the public campaign metadata (`k`: `list`, `open` o
 - **Secret codes.** Code `i` is 12 characters from a 31-symbol alphabet (about 59 bits), derived from the master secret so the organizer can list the codes again later by signing. The claim key behind a code is `keccak256("giftflow:<campaign salt>:<code>")`. Leaf addresses are public, so an attacker could try to guess codes offline; 59 bits makes that impractical, which is why codes are generated and names are never used as secrets.
 - Both modes force a public campaign, because the claim page needs the published recipient list to find the share.
 
+## Gift cards
+
+A gift card is a one-recipient public campaign. Its secret model matches the three claim methods: with **secret code** and **specific wallet**, the link, the QR code and the downloaded image contain no secret (the code is shown to the sender and sent separately; the wallet address is not a secret). With **anyone with the link**, the claim key is in the URL fragment, so the link and its QR are bearer secrets; the image deliberately has no QR. Links, QR codes and images are produced only after the funding transaction is confirmed.
+
 ## Link formats
 
 All links are built with `buildShareLink()` (`src/lib/share.ts`).

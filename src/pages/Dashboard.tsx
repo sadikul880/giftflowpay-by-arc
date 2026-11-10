@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BadgeCheck, CirclePlus, ExternalLink, Gift, Layers, Plus } from 'lucide-react'
+import { ArrowRight, BadgeCheck, CirclePlus, ExternalLink, Gift, HandCoins, Plus } from 'lucide-react'
 import { CampaignRow } from '@/components/CampaignRow'
 import { HeroCard } from '@/components/HeroCard'
 import { ConnectWalletButton, CopyButton, EmptyState, Skeleton, Stat } from '@/components/ui'
@@ -56,9 +56,9 @@ function WalletPanel() {
 }
 
 const ACTIONS = [
+  { to: '/gifts/new', title: 'Create gift card', body: 'Send USDC as a gift with a link, a QR code and a card image.', Icon: Gift, cta: 'Create gift' },
   { to: '/campaigns/new', title: 'Create campaign', body: 'Fund a payout for a team, a community or a giveaway.', Icon: CirclePlus, cta: 'Create now' },
-  { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: Gift, cta: 'Claim' },
-  { to: '/campaigns', title: 'My campaigns', body: 'Track funding, claims, refunds and recipients.', Icon: Layers, cta: 'Open' },
+  { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: HandCoins, cta: 'Claim' },
   { to: '/verify', title: 'Verify', body: 'Check any campaign onchain, no wallet needed.', Icon: BadgeCheck, cta: 'Verify' },
 ]
 

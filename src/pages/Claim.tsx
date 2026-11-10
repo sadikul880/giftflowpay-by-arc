@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { ArrowRight, CheckCircle2, Gift } from 'lucide-react'
 import { AddressLink, ConfirmDialog, EmptyState, Notice, Skeleton, StateBadge, TxLink, WalletGate } from '@/components/ui'
 import { useCampaign, useNow, useWallet } from '@/hooks/useFlow'
+import { GiftCardArt } from '@/components/GiftCardArt'
 import { CodeEntry, OpenShare } from './ClaimModes'
 import { useTxAction } from '@/hooks/useTx'
 import { flowAbi } from '@/lib/abi'
@@ -120,7 +121,9 @@ function ClaimCampaign({ campaignId }: { campaignId: bigint }) {
         <p className="mt-2 text-xs" style={{ color: 'var(--muted)' }}>Organized by <AddressLink address={c.creator} /></p>
       </div>
 
-      {view.meta?.m ? <div className="inset px-4 py-3 text-sm italic" style={{ color: 'var(--ink-2)' }}>{view.meta.m}</div> : null}
+      {view.meta?.g ? <GiftCardArt design={view.meta.g.d} amount={fmtUsd(c.totalAllocation)} from={view.meta.g.f} to={view.meta.g.t} message={view.meta.m} /> : null}
+
+      {view.meta?.m && !view.meta.g ? <div className="inset px-4 py-3 text-sm italic" style={{ color: 'var(--ink-2)' }}>{view.meta.m}</div> : null}
 
       <dl className="card divide-y text-sm">
         {[

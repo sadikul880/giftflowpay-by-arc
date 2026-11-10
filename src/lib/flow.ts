@@ -11,6 +11,7 @@ export const CAMPAIGN_TYPES = [
   { id: 'hackathon', label: 'Hackathon prizes' },
   { id: 'grant', label: 'Grants' },
   { id: 'bounty', label: 'Bounties' },
+  { id: 'gift', label: 'Gift card' },
   { id: 'rewards', label: 'Contributor rewards' },
   { id: 'other', label: 'Other' },
 ] as const
@@ -32,6 +33,8 @@ export interface CampaignMeta {
   m: string
   /** Distribution mode. Missing on older campaigns, which are always 'list'. */
   k?: DistMode
+  /** Gift card details (sender, recipient name, design). Present only on gift cards. */
+  g?: { f: string; t: string; d: string }
 }
 
 export const LIMITS = {
@@ -50,6 +53,13 @@ const encoder = new TextEncoder()
 export const encodeMeta = (m: CampaignMeta): string => JSON.stringify(m)
 export const metaBytes = (m: CampaignMeta): number => encoder.encode(encodeMeta(m)).length
 
+function decodeGift(raw: unknown): CampaignMeta['g'] {
+  if (typeof raw !== 'object' || raw === null) return undefined
+  const g = raw as Record<string, unknown>
+  const s = (v: unknown, max: number) => (typeof v === 'string' ? v.slice(0, max) : '')
+  return { f: s(g.f, 40), t: s(g.t, 40), d: s(g.d, 20) }
+}
+
 export function decodeMeta(raw: string | undefined): CampaignMeta | undefined {
   if (!raw) return undefined
   try {
@@ -62,6 +72,7 @@ export function decodeMeta(raw: string | undefined): CampaignMeta | undefined {
       t,
       m: typeof o.m === 'string' ? o.m.slice(0, LIMITS.message) : '',
       k: o.k === 'open' || o.k === 'codes' ? o.k : 'list',
+      g: decodeGift(o.g),
     }
   } catch {
     return undefined

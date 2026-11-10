@@ -54,13 +54,32 @@ Each needs reentrancy protection, access control, pause, no unrestricted admin w
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 0 | Audit and plan | This page |
-| 1 | Landing, dashboard shell, wallet panel, dark emerald theme | Done (this change) |
-| 2 | Gift cards: QR, PNG, claim | Next. Reuses the existing contract |
+| 1 | Landing, dashboard shell, wallet panel, dark emerald theme | Done |
+| 2 | Gift cards: QR, PNG, claim | Done, see the Phase 2 report below. Reuses the existing contract |
 | 3 | Send payment and payroll | One-off payroll needs UI only; recurring needs `PayrollManager` |
 | 4 | Swap and bridge | Blocked on Circle App Kit key and route verification |
 | 5 | Rewards, company, transactions | Needs `CompanyAccessManager` |
 | 6 | Security, testing, optimization | After each contract change |
 | 7 | Mainnet readiness | Audit first, then explicit approval |
+
+## Phase 2 report: gift cards
+
+Built on the existing contract (a gift is a one-recipient public campaign, so no contract change and no redeploy).
+
+- `/gifts/new`: amount (10, 25, 50, 100, 500 or custom), four designs, from, to, message, expiry (7 days to 1 year), live preview, confirmation dialog, key signing, approval and funding with confirmed-receipt success.
+- Three claim methods. **Secret code**: link, QR and image hold no secret; the recipient types a code you send separately. **Specific wallet**: only that wallet can claim; no secret anywhere. **Anyone with the link**: the claim key is in the link's `#fragment`, so the link and its QR are the secret; the downloaded image carries no QR for that reason. This resolves the QR and PNG note above: the prompt's rule that secrets never appear in QR codes, URLs or images is kept for the code and wallet methods, and the link method is an explicit, labelled opt-in.
+- Real QR codes (`qrcode`, rendered in the browser). Tests scan the generated QR image back and check it decodes to exactly the claim link.
+- Branded PNG drawn on a canvas (1200 by 750), created only after the funding transaction is confirmed.
+- The claim page shows the gift card (design, amount, from, to, message) for gift campaigns.
+- Gift details are stored in the public campaign metadata (field `g`) and survive a page reload; the secret code can be shown again from the campaign's Recipients page by signing with the funding wallet.
+
+Changed: `src/pages/GiftCreate.tsx`, `src/lib/gift.ts`, `src/lib/giftPng.ts`, `src/components/GiftCardArt.tsx`, `src/lib/flow.ts` (gift type and metadata), `src/pages/Claim.tsx`, `src/pages/Dashboard.tsx`, `src/components/Layout.tsx`, `src/App.tsx`, `src/lib/gift.test.ts`.
+
+Verified: typecheck, lint, 22 frontend tests (7 existing, 15 new), production build, form and PNG rendering in a browser.
+
+Not verified: a funded end-to-end gift on Arc Testnet. That needs a wallet holding testnet USDC; the cryptography is unit-tested and the contract paths (one-recipient tree, bearer and wallet-bound claims, refund) are covered by the Foundry suite.
+
+Known limits: a gift is public (amount, sender and recipient names, and for wallet gifts the recipient address are onchain). The code and link methods need the funding wallet to sign once. Gift cards use the contract's per-campaign limits.
 
 ## Phase 1 report
 

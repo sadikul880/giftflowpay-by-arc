@@ -8,6 +8,7 @@ import Campaigns from '@/pages/Campaigns'
 import Claim from '@/pages/Claim'
 import Create from '@/pages/Create'
 import Dashboard from '@/pages/Dashboard'
+import GiftCreate from '@/pages/GiftCreate'
 import Landing from '@/pages/Landing'
 import Privacy from '@/pages/Privacy'
 import Recipients from '@/pages/Recipients'
@@ -33,6 +34,7 @@ export default function App() {
           {/* The product: sidebar shell for organizers. */}
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/gifts/new" element={<GiftCreate />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/campaigns/new" element={<Create />} />
             <Route path="/campaigns/:id" element={<CampaignDetails />} />
