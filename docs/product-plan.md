@@ -57,7 +57,7 @@ Each needs reentrancy protection, access control, pause, no unrestricted admin w
 | 1 | Landing, dashboard shell, wallet panel, dark emerald theme | Done |
 | 2 | Gift cards: QR, PNG, claim | Done, see the Phase 2 report below. Reuses the existing contract |
 | 3 | Send payment and payroll | Done for one-off payments and payroll, see the Phase 3 report. Recurring payroll still needs `PayrollManager` |
-| 4 | Swap and bridge | Blocked on Circle App Kit key and route verification |
+| 4 | Swap and bridge | Done for the routes Circle verifies on Arc Testnet, see the Phase 4 report. No kit key was needed |
 | 5 | Rewards, company, transactions | Needs `CompanyAccessManager` |
 | 6 | Security, testing, optimization | After each contract change |
 | 7 | Mainnet readiness | Audit first, then explicit approval |
@@ -80,6 +80,29 @@ Verified: typecheck, lint, 22 frontend tests (7 existing, 15 new), production bu
 Not verified: a funded end-to-end gift on Arc Testnet. That needs a wallet holding testnet USDC; the cryptography is unit-tested and the contract paths (one-recipient tree, bearer and wallet-bound claims, refund) are covered by the Foundry suite.
 
 Known limits: a gift is public (amount, sender and recipient names, and for wallet gifts the recipient address are onchain). The code and link methods need the funding wallet to sign once. Gift cards use the contract's per-campaign limits.
+
+## Phase 4 report: swap and bridge
+
+Built on Circle App Kit (`@circle-fin/app-kit` 1.21, `@circle-fin/adapter-viem-v2` 1.20), loaded lazily so the rest of the app stays small. Swap and bridge are permissionless: **no kit key and no backend are used**, and the user's own wallet signs every transaction. Nothing is hard-coded: quotes, fees and routes come live from the kit.
+
+- **`/swap`**: swap on Arc Testnet between USDC and EURC (or any ERC-20 by contract address, shown as unverified). Flow: choose tokens and amount, pick a slippage tolerance (0.5%, 1%, 3%), **Review quote** (live `estimateSwap`), see the estimated and minimum output, fees and network, then click the swap button. Quotes expire after 60 seconds and any change of input invalidates them. USDC to native is not offered, because on Arc native gas and USDC are the same asset. Users are told the trade is routed through a third-party aggregator (currently LiFi).
+- **`/bridge`**: CCTP V2 between Base Sepolia and Arc Testnet in both directions. Live quote (`estimateBridge`) with fees and gas, the four CCTP steps (approve, burn, attestation, mint) shown live with explorer links, an option to let Circle's forwarding service complete the mint (no destination gas needed, small fee), and **Continue from the failed step** using `retryBridge` so a failure never means starting over or paying twice.
+- **Balances**: the dashboard wallet panel shows USDC on Arc, EURC on Arc and USDC on Base Sepolia, read from the chains.
+- Token addresses come from Circle's published USDC and EURC testnet tables (Arc USDC `0x3600…0000`, Arc EURC `0x89B5…D72a`, Base Sepolia USDC `0x036C…CF7e`); a test pins them. Base Sepolia was added to the wagmi config as the other end of the bridge.
+
+Verified live against Arc Testnet with the real kit (read-only, throwaway key, nothing signed): USDC to EURC and EURC to USDC both returned live quotes through LiFi (1 USDC about 1.10 EURC at the time), and both bridge directions returned fee and gas estimates. In a browser with a read-only stand-in wallet the real UI produced a live quote for a wallet holding testnet USDC, asked for the wallet signature, and handled a refusal for both swap and bridge (the bridge showed the failed approve step and the Continue button).
+
+Not verified: a completed swap or bridge with a real signature (needs a wallet with testnet USDC and gas on both chains).
+
+Limits and open items:
+- **cirBTC**: no verified contract address or support entry was found in Circle's documentation or the App Kit package, so it is not offered. The custom-token field accepts an address, reads its symbol and decimals from the chain, labels anything reporting the symbol cirBTC as wrapped Bitcoin (not native BTC), and always marks custom tokens unverified. Please supply the official address if cirBTC support is required.
+- **Base mainnet and other chains**: the app is testnet-only by design. App Kit supports many more chains, but they are not enabled, and mainnet needs your explicit go-ahead.
+- Cross-chain swaps and multi-leg routes are not offered; only same-chain swaps on Arc Testnet and the USDC bridge.
+- The bridge page keeps progress in memory. If the tab is closed mid-transfer, use the transaction links already shown and check the explorer before retrying.
+
+Changed: `src/pages/Swap.tsx`, `src/pages/Bridge.tsx`, `src/lib/appkit.ts`, `src/lib/tokens.ts`, `src/hooks/useToken.ts`, `src/config.ts`, `src/components/Layout.tsx`, `src/pages/Dashboard.tsx`, `src/pages/Privacy.tsx`, `src/App.tsx`, `src/lib/swapbridge.test.ts`.
+
+Verified: typecheck, lint, 42 frontend tests (8 new), production build within the 1.28 GB heap cap.
 
 ## Phase 3 report: payments
 

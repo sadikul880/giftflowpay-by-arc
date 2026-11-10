@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout, PublicLayout } from '@/components/Layout'
 import { DraftProvider } from '@/hooks/useDraft'
 import About from '@/pages/About'
+import Bridge from '@/pages/Bridge'
 import Activity from '@/pages/Activity'
 import CampaignDetails from '@/pages/CampaignDetails'
 import Campaigns from '@/pages/Campaigns'
@@ -14,6 +15,7 @@ import Payroll from '@/pages/Payroll'
 import Privacy from '@/pages/Privacy'
 import Recipients from '@/pages/Recipients'
 import SendPayment from '@/pages/SendPayment'
+import Swap from '@/pages/Swap'
 import Settings from '@/pages/Settings'
 import Verify from '@/pages/Verify'
 
@@ -39,6 +41,8 @@ export default function App() {
             <Route path="/gifts/new" element={<GiftCreate />} />
             <Route path="/send" element={<SendPayment />} />
             <Route path="/payroll" element={<Payroll />} />
+            <Route path="/swap" element={<Swap />} />
+            <Route path="/bridge" element={<Bridge />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/campaigns/new" element={<Create />} />
             <Route path="/campaigns/:id" element={<CampaignDetails />} />

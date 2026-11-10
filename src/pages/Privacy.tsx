@@ -34,6 +34,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     body: [
       'To read the blockchain, your browser talks directly to public Arc RPC providers. They can see your IP address and which contract data you request, as with any blockchain app. Looking up names (ENS) uses a public Ethereum RPC provider in the same way.',
       'The page loads its fonts from Google Fonts, which sees your IP address when the page loads.',
+      'If you use Swap or Bridge, your browser also contacts Circle\u2019s App Kit services and, for swaps, a third-party DEX aggregator (currently LiFi) to get quotes and route the trade. They see your wallet address, the tokens and the amounts involved, as in any swap. Nothing is sent unless you open those pages and ask for a quote.',
       'Your wallet extension and the website host (for example your hosting provider) keep their own technical logs under their own policies.',
     ],
   },

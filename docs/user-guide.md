@@ -23,6 +23,14 @@ You need an EVM wallet (for example MetaMask) on Arc Testnet and some testnet US
 
 Private campaigns: the recipient list is not stored onchain. Keep the CSV you funded with. To manage the campaign later, load the same CSV (same order and amounts) on the Recipients page; it is accepted only if it reproduces the onchain commitment.
 
+## Swap
+
+Open **Swap** (Arc Testnet): pick the token you pay and the token you receive (USDC and EURC are built in), enter an amount, choose how much price movement you accept, and press **Review quote**. You see the estimated amount, the minimum you will accept, and the fees. Press the swap button to sign in your wallet. If the quote gets old or you change anything, review again. Swaps are routed through a third-party aggregator (currently LiFi).
+
+## Bridge
+
+Open **Bridge** to move USDC between Base Sepolia and Arc Testnet. Choose the direction, enter an amount and review the quote. By default Circle's forwarding service finishes the transfer for you, so you need no gas on the destination chain. During the bridge your wallet asks you to approve and burn on the source chain; the page shows each step with explorer links. If a step fails, press **Continue from the failed step** instead of starting again. Keep the page open until it finishes.
+
 ## Send payment
 
 Open **Send payment**, enter one wallet address and an amount, check the estimated network fee and confirm. The transfer goes straight to that wallet and cannot be recalled. The page shows success only after the network confirms it.

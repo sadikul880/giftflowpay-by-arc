@@ -17,6 +17,8 @@
     "e2e:testnet": "bun run ./contracts/test-integration/e2e-testnet.ts"
   },
   "dependencies": {
+    "@circle-fin/adapter-viem-v2": "^1.20.1",
+    "@circle-fin/app-kit": "^1.21.0",
     "@openzeppelin/contracts": "5.6.1",
     "@tanstack/react-query": "^5.62.7",
     "connectkit": "^1.9.2",

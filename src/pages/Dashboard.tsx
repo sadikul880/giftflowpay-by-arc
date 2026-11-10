@@ -1,14 +1,35 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CirclePlus, ExternalLink, Gift, HandCoins, Plus, Send, Users } from 'lucide-react'
+import { ArrowLeftRight, ArrowRight, BadgeCheck, CirclePlus, ExternalLink, Gift, HandCoins, Plus, Send, Users, Waypoints } from 'lucide-react'
 import { CampaignRow } from '@/components/CampaignRow'
 import { HeroCard } from '@/components/HeroCard'
 import { ConnectWalletButton, CopyButton, EmptyState, Skeleton, Stat } from '@/components/ui'
 import { useCampaignPages, useGlobals, useNow, useUsdcBalance, useWallet } from '@/hooks/useFlow'
+import { useToken } from '@/hooks/useToken'
+import { ARC_EURC, BASE_SEPOLIA_USDC, fmtToken } from '@/lib/tokens'
 import { campaignState, remainingOf } from '@/lib/flow'
 import { fmtUsd, shortAddr } from '@/lib/format'
 import { ACTIVE } from '@/lib/network'
 import { buildAddressExplorerUrl } from '@/onchain-facts'
+
+function OtherBalances({ owner }: { owner: `0x${string}` }) {
+  const eurc = useToken(ARC_EURC, owner)
+  const base = useToken(BASE_SEPOLIA_USDC, owner)
+  const rows = [
+    { label: 'EURC on Arc', t: eurc },
+    { label: 'USDC on Base Sepolia', t: base },
+  ]
+  return (
+    <ul className="space-y-1.5 text-sm" aria-label="Other balances">
+      {rows.map(({ label, t }) => (
+        <li key={label} className="flex items-center justify-between gap-3">
+          <span style={{ color: 'var(--muted)' }}>{label}</span>
+          <span className="tabular-nums">{t.balance !== undefined && t.decimals !== undefined ? fmtToken(t.balance, t.decimals) : t.isLoading ? '…' : '-'}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 function WalletPanel() {
   const w = useWallet()
@@ -49,6 +70,7 @@ function WalletPanel() {
               <p className="mt-1 text-xs" style={{ color: 'var(--muted)' }}>On Arc, USDC also pays network fees.</p>
             )}
           </div>
+          <OtherBalances owner={w.address} />
         </>
       )}
     </section>
@@ -60,7 +82,10 @@ const ACTIONS = [
   { to: '/campaigns/new', title: 'Create campaign', body: 'Fund a payout for a team, a community or a giveaway.', Icon: CirclePlus, cta: 'Create now' },
   { to: '/send', title: 'Send payment', body: 'Send USDC straight to one wallet.', Icon: Send, cta: 'Send' },
   { to: '/payroll', title: 'Payroll', body: 'Pay a team from a CSV or a list, in one run.', Icon: Users, cta: 'Run payroll' },
+  { to: '/swap', title: 'Swap', body: 'Swap USDC and EURC on Arc with a live quote.', Icon: ArrowLeftRight, cta: 'Swap' },
+  { to: '/bridge', title: 'Bridge', body: 'Move USDC between Base Sepolia and Arc.', Icon: Waypoints, cta: 'Bridge' },
   { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: HandCoins, cta: 'Claim' },
+  { to: '/verify', title: 'Verify', body: 'Check any campaign onchain, no wallet needed.', Icon: BadgeCheck, cta: 'Verify' },
 ]
 
 export default function Dashboard() {
@@ -135,7 +160,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Quick actions">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Quick actions">
         {ACTIONS.map(({ to, title, body, Icon, cta }) => (
           <Link key={to} to={to} className="card group flex flex-col gap-3 p-5 transition-transform hover:-translate-y-0.5">
             <span className="icon-chip size-11"><Icon className="size-5" /></span>
