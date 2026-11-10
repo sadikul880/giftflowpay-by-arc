@@ -20,6 +20,8 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 
 Campaign states shown in the UI are derived from contract data: `scheduled`, `active`, `completed`, `expired`, `cancelled`. A draft exists only in memory before the creation transaction (`useDraft`).
 
+The app has two shells (`src/components/Layout.tsx`). `PublicLayout` (top bar, no sidebar) serves `/`, `/about`, `/privacy`, `/claim` and `/verify`, which recipients and auditors open from a link. `AppLayout` (fixed sidebar, slide-over menu on phones) serves the organizer pages: `/dashboard`, `/campaigns*`, `/activity` and `/settings`. Design tokens (near-black surfaces, emerald borders, neon green actions) are CSS variables in `src/index.css`.
+
 ## Source layout
 
 ```

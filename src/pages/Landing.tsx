@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Landmark, ListChecks, ShieldCheck, Undo2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui'
 import { useGlobals } from '@/hooks/useFlow'
+import { HeroCard } from '@/components/HeroCard'
 import { fmtUsd } from '@/lib/format'
 import { ACTIVE } from '@/lib/network'
 
@@ -22,17 +23,22 @@ export default function Landing() {
   const g = useGlobals()
   return (
     <div className="space-y-20 sm:space-y-24">
-      <section className="max-w-3xl space-y-6 pt-4 sm:pt-10">
-        <p className="label" style={{ color: 'var(--green)' }}>The programmable distribution layer for USDC on Arc</p>
-        <h1 className="display text-4xl leading-[1.08] sm:text-5xl">Create once. Fund once. Distribute by rules.</h1>
-        <p className="max-w-xl text-base sm:text-lg" style={{ color: 'var(--muted)' }}>
-          Run reward campaigns for hackathons, DAOs and communities. Deposit USDC, allocate it to many recipients, and let the contract enforce who can claim what, and when.
-        </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to="/campaigns/new" className="btn btn-primary !min-h-12 !px-6">Create a campaign <ArrowRight className="size-4" /></Link>
-          <Link to="/claim" className="btn btn-secondary !min-h-12 !px-6">Claim USDC</Link>
-          <Link to="/verify" className="btn btn-ghost !min-h-12 !px-4">Verify a campaign</Link>
+      <section className="grid items-center gap-10 pt-2 sm:pt-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="space-y-6">
+          <p className="label" style={{ color: 'var(--green)' }}>Non-custodial USDC payments on Arc</p>
+          <h1 className="display text-4xl leading-[1.08] sm:text-5xl">
+            Send, reward and pay with <span className="text-neon">USDC on Arc</span>
+          </h1>
+          <p className="max-w-xl text-base sm:text-lg" style={{ color: 'var(--muted)' }}>
+            Fund a campaign once and let the smart contract decide who can claim what, and when. Pay a team, reward a community or hand out USDC with a link or a code.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link to="/campaigns/new" className="btn btn-primary !min-h-12 !px-6">Create a campaign <ArrowRight className="size-4" /></Link>
+            <Link to="/claim" className="btn btn-secondary !min-h-12 !px-6">Claim USDC</Link>
+            <Link to="/verify" className="btn btn-ghost !min-h-12 !px-4">Verify a campaign</Link>
+          </div>
         </div>
+        <HeroCard />
       </section>
 
       <section aria-label="Live totals" className="card grid grid-cols-2 gap-6 p-5 sm:grid-cols-4 sm:p-6">
@@ -84,7 +90,7 @@ export default function Landing() {
       <section className="max-w-2xl text-sm" style={{ color: 'var(--muted)' }}>
         <h2 className="mb-2 text-base font-semibold" style={{ color: 'var(--ink)' }}>What a contract can and cannot check</h2>
         <p>
-          A smart contract cannot see whether someone finished a course, merged a pull request or attended an event. GiftFlow campaigns therefore pay the allocations you commit to. Rewards that depend on real-world actions need an approver, a multisig or a signed attestation, which are planned extensions and not part of this release.
+          A smart contract cannot see whether someone finished a course, merged a pull request or attended an event. GiftFlowPay campaigns therefore pay the allocations you commit to. Rewards that depend on real-world actions need an approver, a multisig or a signed attestation, which are planned extensions and not part of this release.
         </p>
       </section>
     </div>

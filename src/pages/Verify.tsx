@@ -83,7 +83,7 @@ function VerifyCampaign({ id }: { id: bigint }) {
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
         <h1 className="display text-2xl sm:text-3xl">Public verification</h1>
-        <p className="mt-1.5 text-sm" style={{ color: 'var(--muted)' }}>Everything below is read directly from the GiftFlow contract and its events.</p>
+        <p className="mt-1.5 text-sm" style={{ color: 'var(--muted)' }}>Everything below is read directly from the GiftFlowPay contract and its events.</p>
       </div>
 
       <CampaignSummary view={view} now={now} />

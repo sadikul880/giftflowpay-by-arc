@@ -69,7 +69,7 @@ function ListEditor({ showErrors }: { showErrors: boolean }) {
             {visible.map((r, i) => {
               const err = check.errors[r.id]
               return (
-                <tr key={r.id} style={showErrors && err ? { background: 'rgba(180,40,63,0.05)' } : undefined}>
+                <tr key={r.id} style={showErrors && err ? { background: 'rgba(255,107,129,0.08)' } : undefined}>
                   <td className="tabular-nums" style={{ color: 'var(--muted)' }}>{safe * PAGE + i + 1}</td>
                   <td className="min-w-64">
                     <input className="field mono !min-h-9 !text-[12.5px]" placeholder="0x… or empty for a claim link" aria-label="Wallet" value={r.wallet} onChange={(e) => setRow(r.id, { wallet: e.target.value })} />

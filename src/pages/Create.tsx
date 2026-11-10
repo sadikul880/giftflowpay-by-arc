@@ -49,7 +49,7 @@ export default function Create() {
           <li key={s} className="flex items-center gap-2">
             <span
               className="flex size-6 items-center justify-center rounded-full text-xs font-semibold"
-              style={{ background: i < step ? 'var(--green)' : i === step ? 'var(--accent)' : 'var(--surface-muted)', color: i <= step ? '#fff' : 'var(--subtle)' }}
+              style={{ background: i < step ? 'var(--green)' : i === step ? 'var(--accent)' : 'var(--surface-muted)', color: i <= step ? 'var(--on-accent)' : 'var(--subtle)' }}
               aria-current={i === step ? 'step' : undefined}
             >
               {i < step ? <Check className="size-3.5" /> : i + 1}

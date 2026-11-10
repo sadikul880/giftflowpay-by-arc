@@ -65,7 +65,7 @@ const REVERTS: Record<string, string> = {
   InvalidRecipientsData: 'The recipient list could not be encoded.',
   MetadataTooLong: 'The campaign name, description or message is too long.',
   InvalidBatchSize: 'A direct distribution batch must have 1 to 100 recipients.',
-  EnforcedPause: 'GiftFlow is paused right now. Please try again later.',
+  EnforcedPause: 'GiftFlowPay is paused right now. Please try again later.',
   ERC20InsufficientBalance: 'Your USDC balance is too low.',
   ERC20InsufficientAllowance: 'USDC spending approval is missing.',
 }

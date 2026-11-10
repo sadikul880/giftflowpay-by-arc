@@ -89,7 +89,7 @@ function Manage({ id }: { id: bigint }) {
           <p className="text-sm" style={{ color: 'var(--muted)' }}>
             {c.isPublic
               ? 'The published list could not be loaded or does not match the campaign commitment.'
-              : 'This campaign did not publish its recipients. To manage it, load the exact CSV you funded it with (same order and amounts). GiftFlow rebuilds the commitment in your browser and only accepts the file if it matches the onchain root.'}
+              : 'This campaign did not publish its recipients. To manage it, load the exact CSV you funded it with (same order and amounts). GiftFlowPay rebuilds the commitment in your browser and only accepts the file if it matches the onchain root.'}
           </p>
           {isOwner ? (
             <>

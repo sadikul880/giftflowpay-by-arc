@@ -4,6 +4,7 @@ GiftFlow is a non-custodial USDC distribution platform on Arc. An organizer crea
 
 | Document | What it covers |
 | --- | --- |
+| [product-plan.md](product-plan.md) | Phase 0 audit and phased plan for the GiftFlowPay product (what exists, what each feature needs) |
 | [architecture.md](architecture.md) | System overview, data flow, what lives onchain and what does not |
 | [smart-contract.md](smart-contract.md) | `GiftFlow.sol`: storage, functions, events, errors, limits |
 | [claim-links-and-security.md](claim-links-and-security.md) | Merkle sum tree, claim keys, link formats, threat model |

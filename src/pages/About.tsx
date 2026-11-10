@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/ui'
 
 const HOW = [
   { title: 'Create', body: 'Name the campaign, set when claims open and close, and choose how people get paid: a list of wallets, one shared link, or a secret code for each person.' },
-  { title: 'Fund', body: 'Deposit the full USDC total in a single transaction. The contract records every allocation and holds the money. Nobody, including GiftFlow, can spend it other than by a valid claim or a refund to you.' },
+  { title: 'Fund', body: 'Deposit the full USDC total in a single transaction. The contract records every allocation and holds the money. Nobody, including GiftFlowPay, can spend it other than by a valid claim or a refund to you.' },
   { title: 'Distribute', body: 'Recipients connect a wallet and claim, or you send directly to listed wallets. Each allocation can be claimed once.' },
   { title: 'Refund', body: 'After the deadline, whatever was not claimed goes back to the wallet that funded the campaign.' },
 ]
@@ -14,14 +14,14 @@ const HOW = [
 export default function About() {
   return (
     <div className="mx-auto max-w-3xl space-y-10">
-      <PageHeader title="About GiftFlow" subtitle="The programmable distribution layer for USDC on Arc. Create once. Fund once. Distribute by rules." />
+      <PageHeader title="About GiftFlowPay" subtitle="The programmable distribution layer for USDC on Arc. Create once. Fund once. Distribute by rules." />
 
       <section className="space-y-3 text-[15px] leading-relaxed" style={{ color: 'var(--ink-2)' }}>
         <p>
-          GiftFlow helps projects, DAOs, hackathon organizers and teams pay many people at once with USDC: reward campaigns, bounties, grants, airdrops and salaries. You fund a campaign once and the smart contract enforces who can claim what, and when.
+          GiftFlowPay helps projects, DAOs, hackathon organizers and teams pay many people at once with USDC: reward campaigns, bounties, grants, airdrops and salaries. You fund a campaign once and the smart contract enforces who can claim what, and when.
         </p>
         <p>
-          It is non-custodial. There is no GiftFlow account, no database and no server that holds your money or your keys. Everything that matters lives in a smart contract on {ACTIVE.label}, and anyone can check it on the public verification page of every campaign.
+          It is non-custodial. There is no GiftFlowPay account, no database and no server that holds your money or your keys. Everything that matters lives in a smart contract on {ACTIVE.label}, and anyone can check it on the public verification page of every campaign.
         </p>
       </section>
 

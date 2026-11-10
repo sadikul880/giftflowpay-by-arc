@@ -3,9 +3,9 @@ import { PageHeader } from '@/components/ui'
 
 const SECTIONS: Array<{ title: string; body: string[] }> = [
   {
-    title: 'What GiftFlow does not collect',
+    title: 'What GiftFlowPay does not collect',
     body: [
-      'GiftFlow has no accounts, no database and no backend. We do not ask for your name, email or phone number, we do not use cookies for tracking, and we run no analytics or advertising scripts.',
+      'GiftFlowPay has no accounts, no database and no backend. We do not ask for your name, email or phone number, we do not use cookies for tracking, and we run no analytics or advertising scripts.',
       'We never see or store your private keys or seed phrase. Your wallet signs transactions and messages; the app only receives the result.',
     ],
   },
@@ -48,7 +48,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
 export default function Privacy() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
-      <PageHeader title="Privacy" subtitle="GiftFlow is built to need as little data as possible. This is what is and is not collected." />
+      <PageHeader title="Privacy" subtitle="GiftFlowPay is built to need as little data as possible. This is what is and is not collected." />
       {SECTIONS.map((s) => (
         <section key={s.title} className="space-y-2">
           <h2 className="text-lg font-semibold">{s.title}</h2>

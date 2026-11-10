@@ -9,11 +9,11 @@ import type { CampaignState } from '@/lib/flow'
 import { useWallet } from '@/hooks/useFlow'
 
 const STATE_STYLE: Record<CampaignState, { label: string; color: string; bg: string }> = {
-  scheduled: { label: 'Scheduled', color: '#364152', bg: 'rgba(54,65,82,0.1)' },
-  active: { label: 'Active', color: '#17803d', bg: 'rgba(23,128,61,0.12)' },
-  completed: { label: 'Completed', color: '#14181f', bg: 'rgba(20,24,31,0.08)' },
-  expired: { label: 'Expired', color: '#8f6410', bg: 'rgba(143,100,16,0.12)' },
-  cancelled: { label: 'Cancelled', color: '#b4283f', bg: 'rgba(180,40,63,0.1)' },
+  scheduled: { label: 'Scheduled', color: '#9fb4a8', bg: 'rgba(159,180,168,0.14)' },
+  active: { label: 'Active', color: '#34f08a', bg: 'rgba(52,240,138,0.14)' },
+  completed: { label: 'Completed', color: '#eaf4ee', bg: 'rgba(234,244,238,0.1)' },
+  expired: { label: 'Expired', color: '#f3b84b', bg: 'rgba(243,184,75,0.14)' },
+  cancelled: { label: 'Cancelled', color: '#ff6b81', bg: 'rgba(255,107,129,0.14)' },
 }
 
 export function StateBadge({ state }: { state: CampaignState }) {
@@ -26,7 +26,7 @@ export function StateBadge({ state }: { state: CampaignState }) {
 }
 
 export function Pill({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'green' | 'warn' }) {
-  const c = tone === 'green' ? ['#17803d', 'rgba(23,128,61,0.1)'] : tone === 'warn' ? ['#8f6410', 'rgba(143,100,16,0.12)'] : ['#364152', 'rgba(54,65,82,0.09)']
+  const c = tone === 'green' ? ['#34f08a', 'rgba(52,240,138,0.13)'] : tone === 'warn' ? ['#f3b84b', 'rgba(243,184,75,0.14)'] : ['#c3d5ca', 'rgba(195,213,202,0.1)']
   return (
     <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium" style={{ color: c[0], background: c[1] }}>
       {children}
@@ -209,7 +209,7 @@ export function StepList({ steps }: { steps: Array<{ label: string; hint?: strin
             className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
             style={{
               background: s.status === 'done' ? 'var(--green)' : s.status === 'error' ? 'var(--danger)' : s.status === 'active' ? 'var(--accent)' : 'var(--surface-muted)',
-              color: s.status === 'todo' ? 'var(--subtle)' : '#fff',
+              color: s.status === 'todo' ? 'var(--subtle)' : 'var(--on-accent)',
               border: s.status === 'todo' ? '1px solid var(--border-strong)' : 'none',
             }}
           >

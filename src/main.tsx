@@ -17,7 +17,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>
+        <ConnectKitProvider mode="dark" customTheme={{ "--ck-accent-color": "#34f08a", "--ck-accent-text-color": "#04110a", "--ck-connectbutton-border-radius": "12px" }}>
           <App />
           <Toaster position="top-center" />
         </ConnectKitProvider>

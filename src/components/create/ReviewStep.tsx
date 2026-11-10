@@ -199,7 +199,7 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
 
       {short ? <Notice tone="error">Your balance is lower than the campaign total. You also need a little USDC for network fees. <a className="font-semibold underline" href="https://faucet.circle.com" target="_blank" rel="noopener noreferrer">Get test USDC</a></Notice> : null}
       {overCap ? <Notice tone="error">This total is above the contract&rsquo;s current per-campaign limit of ${fmtUsd(globals.data?.maxTotalAllocation ?? 0n)}.</Notice> : null}
-      {globals.data?.paused ? <Notice tone="error">GiftFlow is paused, so new campaigns cannot be funded right now.</Notice> : null}
+      {globals.data?.paused ? <Notice tone="error">GiftFlowPay is paused, so new campaigns cannot be funded right now.</Notice> : null}
       {tx.error ? <Notice tone="error">{tx.error}</Notice> : null}
       {tx.busy ? <div className="card p-5"><StepList steps={steps} /></div> : null}
 
@@ -213,7 +213,7 @@ export function ReviewStep({ now, onDone }: { now: number; onDone: (r: LaunchRes
       <ConfirmDialog
         open={open}
         title="Fund this campaign?"
-        description="Your USDC moves into the GiftFlow contract in one transaction. You can only take it back by refunding after the deadline, or cancelling before claims open."
+        description="Your USDC moves into the GiftFlowPay contract in one transaction. You can only take it back by refunding after the deadline, or cancelling before claims open."
         rows={[['Total', `${fmtUsd(total)} USDC`], ['Recipients', String(recipients.length)], ['Deadline', fmtDate(times.deadline)]]}
         confirmLabel={needsApproval ? 'Approve and fund' : 'Fund campaign'}
         busy={tx.busy}

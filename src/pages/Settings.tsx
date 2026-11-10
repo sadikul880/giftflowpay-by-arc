@@ -62,7 +62,7 @@ export default function Settings() {
         <dl className="card divide-y">
           <Row k="Address">{w.address ? <AddressLink address={w.address} full /> : 'Not connected'}</Row>
           <Row k="USDC balance">{balance.data !== undefined ? `$${fmtUsd(balance.data)}` : '-'}</Row>
-          <Row k="USDC approved for GiftFlow">{allowance.data !== undefined ? `$${fmtUsd(allowance.data)}` : '-'}</Row>
+          <Row k="USDC approved for GiftFlowPay">{allowance.data !== undefined ? `$${fmtUsd(allowance.data)}` : '-'}</Row>
         </dl>
         {tx.error ? <Notice tone="error">{tx.error}</Notice> : null}
         {allowance.data !== undefined && allowance.data > 0n ? (
@@ -70,7 +70,7 @@ export default function Settings() {
             <button type="button" className="btn btn-secondary" disabled={tx.busy} onClick={() => setConfirm(true)}>Reset USDC approval to 0</button>
           </WalletGate>
         ) : null}
-        <p className="text-xs" style={{ color: 'var(--muted)' }}>GiftFlow approves only the exact amount of each campaign you fund, so an open approval is normally zero.</p>
+        <p className="text-xs" style={{ color: 'var(--muted)' }}>GiftFlowPay approves only the exact amount of each campaign you fund, so an open approval is normally zero.</p>
       </section>
 
       <section className="space-y-3">
@@ -81,7 +81,7 @@ export default function Settings() {
           <Row k="RPC">{chain.rpcUrls[0]}</Row>
           <Row k="Explorer"><a className="underline underline-offset-2" href={ACTIVE.explorerBase} target="_blank" rel="noopener noreferrer">{ACTIVE.explorerBase}</a></Row>
           <Row k="USDC token"><AddressLink address={ACTIVE.usdc} full /> ({ACTIVE.usdcDecimals} decimals)</Row>
-          <Row k="GiftFlow contract">{ACTIVE.contract ? <AddressLink address={ACTIVE.contract} full /> : 'Not configured'}</Row>
+          <Row k="GiftFlowPay contract">{ACTIVE.contract ? <AddressLink address={ACTIVE.contract} full /> : 'Not configured'}</Row>
           <Row k="Deployed at block">{deploy.data?.toString() ?? '-'}</Row>
           <Row k="Per-campaign limit">{globals.data ? `$${fmtUsd(globals.data.maxTotalAllocation)}` : '-'}</Row>
           <Row k="Contract status">{globals.data ? (globals.data.paused ? <Pill tone="warn">Paused</Pill> : <Pill tone="green">Operating</Pill>) : '-'}</Row>
@@ -99,14 +99,14 @@ export default function Settings() {
             <span className="text-sm">Default claim window (days)</span>
             <input type="number" min={1} max={730} className="field !w-24 tabular-nums" value={prefs.defaultWindowDays} onChange={(e) => update({ defaultWindowDays: Math.min(730, Math.max(1, Number(e.target.value) || 30)) })} />
           </label>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>Preferences are stored in this browser only. Campaigns, allocations, claims and refunds live on the blockchain; GiftFlow has no database.</p>
+          <p className="text-xs" style={{ color: 'var(--muted)' }}>Preferences are stored in this browser only. Campaigns, allocations, claims and refunds live on the blockchain; GiftFlowPay has no database.</p>
         </div>
       </section>
 
       <ConfirmDialog
         open={confirm}
         title="Reset USDC approval?"
-        description="This sets GiftFlow's permission to spend your USDC back to zero. You will approve again the next time you fund a campaign."
+        description="This sets GiftFlowPay's permission to spend your USDC back to zero. You will approve again the next time you fund a campaign."
         confirmLabel="Reset approval"
         busy={tx.busy}
         onCancel={() => setConfirm(false)}

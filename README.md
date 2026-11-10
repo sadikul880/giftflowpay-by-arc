@@ -1,4 +1,4 @@
-# GiftFlow
+# GiftFlowPay
 
 The programmable distribution layer for USDC on Arc. Create once. Fund once. Distribute by rules.
 
