@@ -7,6 +7,7 @@ import { Notice, PageHeader, Spinner, WalletGate } from '@/components/ui'
 import { useNow, useWallet } from '@/hooks/useFlow'
 import { useToken } from '@/hooks/useToken'
 import { kitMessage, loadKit, walletAdapter } from '@/lib/appkit'
+import { safeHttpUrl } from '@/lib/safeUrl'
 import { fmtToken, isWrappedBitcoin, parseTokenAddress, ARC_EURC, ARC_USDC } from '@/lib/tokens'
 import { ACTIVE } from '@/lib/network'
 import { parseUsdc } from '@/onchain-money'
@@ -233,8 +234,8 @@ function SwapDone({ result }: { result: SwapResult }) {
     <div className="card mt-5 space-y-2 p-5 text-sm">
       <div className="font-semibold" style={{ color: finished ? 'var(--green)' : 'var(--warn)' }}>{finished ? 'Swap confirmed' : `Swap submitted (${result.progress.status})`}</div>
       <p>{result.amountIn} {result.tokenIn}{result.amountOut ? ` for ${result.amountOut} ${result.tokenOut}` : ''}</p>
-      {result.explorerUrl ? (
-        <a className="inline-flex items-center gap-1 font-medium underline underline-offset-2" style={{ color: 'var(--green)' }} href={result.explorerUrl} target="_blank" rel="noopener noreferrer">
+      {safeHttpUrl(result.explorerUrl) ? (
+        <a className="inline-flex items-center gap-1 font-medium underline underline-offset-2" style={{ color: 'var(--green)' }} href={safeHttpUrl(result.explorerUrl)} target="_blank" rel="noopener noreferrer">
           View transaction <ExternalLink className="size-3.5" />
         </a>
       ) : null}

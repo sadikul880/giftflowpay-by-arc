@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { arcTestnet, baseSepolia } from 'viem/chains'
 import { isNoRoute, kitMessage } from './appkit'
+import { safeHttpUrl } from './safeUrl'
 import { ARC_EURC, ARC_USDC, BASE_SEPOLIA_USDC, BRIDGE_CHAINS, fmtToken, isWrappedBitcoin, parseTokenAddress, SWAP_TOKENS } from './tokens'
 
 describe('verified token and chain facts', () => {
@@ -66,5 +67,19 @@ describe('error handling', () => {
     expect(kitMessage(new Error('rate limit exceeded'))).not.toContain('No swap route')
     expect(kitMessage({ message: 'User rejected the request.' })).toBe('Request cancelled in your wallet.')
     expect(kitMessage(null)).toBe('Something went wrong. Please try again.')
+  })
+})
+
+describe('links from outside the app', () => {
+  test('only plain http(s) URLs are followed', () => {
+    expect(safeHttpUrl('https://explorer.testnet.arc.io/tx/0xabc')).toBe('https://explorer.testnet.arc.io/tx/0xabc')
+    expect(safeHttpUrl('http://localhost:3000/x')).toBe('http://localhost:3000/x')
+    expect(safeHttpUrl('javascript:alert(1)')).toBeUndefined()
+    expect(safeHttpUrl('JaVaScRiPt:alert(1)')).toBeUndefined()
+    expect(safeHttpUrl('data:text/html,<script>alert(1)</script>')).toBeUndefined()
+    expect(safeHttpUrl('//evil.example/x')).toBeUndefined()
+    expect(safeHttpUrl('not a url')).toBeUndefined()
+    expect(safeHttpUrl(undefined)).toBeUndefined()
+    expect(safeHttpUrl({ href: 'https://x.y' })).toBeUndefined()
   })
 })

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ConnectKitButton } from 'connectkit'
 import { Activity, ArrowLeftRight, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, Menu, ReceiptText, Send, Settings, Trophy, TriangleAlert, Users, Waypoints, Wallet, X } from 'lucide-react'
@@ -6,7 +6,7 @@ import { buildAddressExplorerUrl } from '@/onchain-facts'
 import { ACTIVE } from '@/lib/network'
 import { fmtUsd, shortAddr } from '@/lib/format'
 import { useUsdcBalance, useWallet } from '@/hooks/useFlow'
-import { Spinner } from './ui'
+import { Skeleton, Spinner } from './ui'
 
 const APP_NAV = [
   { to: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard, end: true },
@@ -109,6 +109,17 @@ function ScrollTop() {
   return null
 }
 
+/** Shown while a page's code is downloaded. */
+function PageFallback() {
+  return (
+    <div className="space-y-4" role="status" aria-label="Loading page">
+      <Skeleton className="h-9 w-64" />
+      <Skeleton className="h-4 w-96 max-w-full" />
+      <Skeleton className="h-64 w-full !rounded-2xl" />
+    </div>
+  )
+}
+
 function Footer() {
   return (
     <footer className="border-t px-4 py-8 text-center text-xs" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
@@ -158,7 +169,11 @@ export function PublicLayout() {
         </nav>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-12">
-        <Outlet />
+        <Suspense fallback={<PageFallback />}>
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
+        </Suspense>
       </main>
       <Footer />
     </div>
@@ -244,7 +259,9 @@ export function AppLayout() {
           </div>
         </header>
         <main className="w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-          <Outlet />
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
         </main>
         <Footer />
       </div>

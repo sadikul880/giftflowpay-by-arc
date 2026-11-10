@@ -59,7 +59,7 @@ Each needs reentrancy protection, access control, pause, no unrestricted admin w
 | 3 | Send payment and payroll | Done for one-off payments and payroll, see the Phase 3 report. Recurring payroll still needs `PayrollManager` |
 | 4 | Swap and bridge | Done for the routes Circle verifies on Arc Testnet, see the Phase 4 report. No kit key was needed |
 | 5 | Rewards, company, transactions | Rewards and transactions done; company management is blocked on a product decision, see the Phase 5 report |
-| 6 | Security, testing, optimization | After each contract change |
+| 6 | Security, testing, optimization | Done, see the Phase 6 report and `docs/audit.md` |
 | 7 | Mainnet readiness | Audit first, then explicit approval |
 
 ## Phase 2 report: gift cards
@@ -80,6 +80,18 @@ Verified: typecheck, lint, 22 frontend tests (7 existing, 15 new), production bu
 Not verified: a funded end-to-end gift on Arc Testnet. That needs a wallet holding testnet USDC; the cryptography is unit-tested and the contract paths (one-recipient tree, bearer and wallet-bound claims, refund) are covered by the Foundry suite.
 
 Known limits: a gift is public (amount, sender and recipient names, and for wallet gifts the recipient address are onchain). The code and link methods need the funding wallet to sign once. Gift cards use the contract's per-campaign limits.
+
+## Phase 6 report: security, testing, optimization
+
+Full detail is in [audit.md](audit.md). In short:
+
+- **Contract**: 123 tests pass at 10,000 fuzz runs and 1,024 invariant runs of depth 300; 98.7% line and 97.7% branch coverage of `GiftFlow.sol`. No defects found, no contract change.
+- **New local-chain end-to-end test** (`bun run e2e:local`, also in CI): the app's real TypeScript against the real contract on Anvil, 10 scenarios including 100 secret codes and a 100-employee payroll in two batches. All pass. It closes the gap that gifts, codes and payroll were previously tested on each side separately.
+- **Security**: a real Content-Security-Policy, verified with zero violations against the production build; external links limited to http(s); 13 transitive dependency advisories assessed as unreachable and documented.
+- **Optimization**: page-level code splitting; initial JavaScript 553 KB to 494 KB gzipped; the capped Docker-style build still passes.
+- **CI**: GitHub Actions workflow for typecheck, lint, tests, build, Foundry and the local end-to-end test.
+
+Still open: an independent audit, the company-management decision, cirBTC, and a live run of the funded flows on Arc Testnet.
 
 ## Phase 5 report: rewards, transactions and company
 

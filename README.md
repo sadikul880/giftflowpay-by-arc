@@ -37,7 +37,8 @@ bun run check            # lint + typecheck
 bun run build            # production build
 bun run contracts:build
 bun run test             # frontend unit tests
-bun run contracts:test   # 123 tests
+bun run e2e:local        # local-chain end-to-end test (Docker)
+bun run contracts:test   # 123 contract tests
 ```
 
 Deployed contract (Arc Testnet): `0xa4b97bda0785ab417d0cce128a9fb9449139ee2c`. Mainnet is intentionally not configured.

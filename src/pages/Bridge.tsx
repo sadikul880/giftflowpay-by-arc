@@ -7,6 +7,7 @@ import { ConnectWalletButton, Notice, PageHeader, Spinner } from '@/components/u
 import { useNow, useWallet } from '@/hooks/useFlow'
 import { useToken } from '@/hooks/useToken'
 import { kitMessage, loadKit, walletAdapter } from '@/lib/appkit'
+import { safeHttpUrl } from '@/lib/safeUrl'
 import { BRIDGE_CHAINS, fmtToken, type BridgeChain } from '@/lib/tokens'
 import { parseUsdc } from '@/onchain-money'
 import type { BridgeResult, EstimateResult } from '@circle-fin/app-kit'
@@ -214,7 +215,7 @@ export default function Bridge() {
                   <span style={{ color: s ? 'var(--ink)' : 'var(--subtle)' }}>{STEP_LABEL[name]}</span>
                   <span className="flex items-center gap-2 text-xs">
                     <span style={{ color: s?.state === 'error' ? 'var(--danger)' : s?.state === 'success' ? 'var(--green)' : 'var(--muted)' }}>{s ? s.state : 'waiting'}</span>
-                    {s?.explorerUrl ? <a href={s.explorerUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2" style={{ color: 'var(--green)' }}>view <ExternalLink className="size-3" /></a> : null}
+                    {safeHttpUrl(s?.explorerUrl) ? <a href={safeHttpUrl(s?.explorerUrl)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 underline underline-offset-2" style={{ color: 'var(--green)' }}>view <ExternalLink className="size-3" /></a> : null}
                   </span>
                 </li>
               )

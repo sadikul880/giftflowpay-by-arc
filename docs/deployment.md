@@ -69,6 +69,8 @@ The app reads logs from the public Arc RPC, which limits `eth_getLogs` to about 
 
 ## Security headers
 
+The full policy is in `security-headers.inc` with the reasoning for each directive; it was verified against the production build with zero violations. The summary below names the main points.
+
 nginx sends `X-Content-Type-Options`, `Referrer-Policy: no-referrer`, a `Content-Security-Policy` limited to `frame-ancestors 'none'` (no framing, so no clickjacking of approve and claim buttons), and a restrictive `Permissions-Policy`. They live in `security-headers.inc`.
 
 ## Build memory

@@ -58,6 +58,8 @@ export default defineConfig({
   },
   build: {
     reportCompressedSize: false,
+    // Route-level code splitting is done with React.lazy in App.tsx. Hand-made vendor chunks were tried and removed:
+    // they split React from the libraries that import it and the app failed to start.
     rollupOptions: { shimMissingExports: true },
   },
   server: {

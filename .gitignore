@@ -10,3 +10,4 @@ traces.jsonl
 console.jsonl
 !.env.example
 .claude/
+broadcast/

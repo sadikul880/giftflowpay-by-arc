@@ -28,6 +28,25 @@ docker run --rm --entrypoint sh -v "$PWD:/app" -w /app ghcr.io/foundry-rs/foundr
 
 (`node_modules` must exist first because OpenZeppelin is resolved from it.)
 
+### Deeper runs
+
+```bash
+FOUNDRY_FUZZ_RUNS=10000 FOUNDRY_INVARIANT_RUNS=1024 FOUNDRY_INVARIANT_DEPTH=300 forge test
+forge coverage --report summary --ir-minimum        # GiftFlow.sol: 98.7% lines, 97.7% branches, 100% functions
+```
+
+## Local-chain end-to-end test (no funds needed)
+
+```bash
+bun run e2e:local      # Docker: starts Anvil, deploys a fake USDC and GiftFlow, runs the test, stops Anvil
+```
+
+`contracts/test-integration/local-chain.test.ts` drives the real contract with the app's own libraries: gifts by secret code, named wallet and private link, one shared link with several shares, 100 secret codes, payroll for 100 employees in batches with resume, refund, cancel, and the attack cases (wrong code, wrong wallet, replay, double pay, overstated total). With Foundry installed locally, start `anvil`, run `forge script contracts/script/DeployLocal.s.sol:DeployLocal --rpc-url http://127.0.0.1:8545 --broadcast --private-key <anvil dev key>` and then `bun test contracts/test-integration/local-chain.test.ts`. The test skips itself when no node is running. `DeployLocal` refuses to run on any chain but Anvil's 31337.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push and pull request: typecheck, lint, frontend tests and the capped production build; the Foundry suite; and the local-chain end-to-end test.
+
 ## Frontend checks
 
 ```bash

@@ -1,25 +1,28 @@
+import { lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout, PublicLayout } from '@/components/Layout'
 import { DraftProvider } from '@/hooks/useDraft'
-import About from '@/pages/About'
-import Bridge from '@/pages/Bridge'
-import Activity from '@/pages/Activity'
-import CampaignDetails from '@/pages/CampaignDetails'
-import Campaigns from '@/pages/Campaigns'
-import Claim from '@/pages/Claim'
-import Create from '@/pages/Create'
-import Dashboard from '@/pages/Dashboard'
-import GiftCreate from '@/pages/GiftCreate'
 import Landing from '@/pages/Landing'
-import Payroll from '@/pages/Payroll'
-import Privacy from '@/pages/Privacy'
-import Recipients from '@/pages/Recipients'
-import Rewards from '@/pages/Rewards'
-import SendPayment from '@/pages/SendPayment'
-import Swap from '@/pages/Swap'
-import Transactions from '@/pages/Transactions'
-import Settings from '@/pages/Settings'
-import Verify from '@/pages/Verify'
+
+// Every page except the landing page loads on demand, so a visitor only downloads the code of the pages they open.
+const About = lazy(() => import('@/pages/About'))
+const Activity = lazy(() => import('@/pages/Activity'))
+const Bridge = lazy(() => import('@/pages/Bridge'))
+const CampaignDetails = lazy(() => import('@/pages/CampaignDetails'))
+const Campaigns = lazy(() => import('@/pages/Campaigns'))
+const Claim = lazy(() => import('@/pages/Claim'))
+const Create = lazy(() => import('@/pages/Create'))
+const Dashboard = lazy(() => import('@/pages/Dashboard'))
+const GiftCreate = lazy(() => import('@/pages/GiftCreate'))
+const Payroll = lazy(() => import('@/pages/Payroll'))
+const Privacy = lazy(() => import('@/pages/Privacy'))
+const Recipients = lazy(() => import('@/pages/Recipients'))
+const Rewards = lazy(() => import('@/pages/Rewards'))
+const SendPayment = lazy(() => import('@/pages/SendPayment'))
+const Settings = lazy(() => import('@/pages/Settings'))
+const Swap = lazy(() => import('@/pages/Swap'))
+const Transactions = lazy(() => import('@/pages/Transactions'))
+const Verify = lazy(() => import('@/pages/Verify'))
 
 export default function App() {
   return (
