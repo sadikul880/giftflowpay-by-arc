@@ -23,6 +23,14 @@ You need an EVM wallet (for example MetaMask) on Arc Testnet and some testnet US
 
 Private campaigns: the recipient list is not stored onchain. Keep the CSV you funded with. To manage the campaign later, load the same CSV (same order and amounts) on the Recipients page; it is accepted only if it reproduces the onchain commitment.
 
+## Send payment
+
+Open **Send payment**, enter one wallet address and an amount, check the estimated network fee and confirm. The transfer goes straight to that wallet and cannot be recalled. The page shows success only after the network confirms it.
+
+## Payroll
+
+Open **Payroll**, name the run, then add employees one by one or import a CSV (`wallet,amount,label`). Every row needs a wallet. Choose **Fund and pay**: after one USDC approval, the total is funded in one transaction and then paid out to every wallet (50 per transaction). The page shows how many wallets are paid, confirmed on the chain. If something fails partway, use **Continue sending**; unpaid money stays in the contract and can be refunded after 30 days. Download the CSV receipt when done. Employee labels stay in your browser; wallets and amounts are visible on the explorer like any transfer.
+
 ## Gift cards
 
 Open **Gift cards** in the sidebar. Choose an amount and design, write the names and message, pick how the recipient claims and how long the gift stays open, then fund it. Success, the link, the QR code and the downloadable PNG appear only after the network confirms the funding transaction.

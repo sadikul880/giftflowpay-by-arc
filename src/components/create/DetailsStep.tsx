@@ -42,7 +42,7 @@ export function DetailsStep({ now, showErrors }: { now: number; showErrors: bool
         <label className="space-y-1.5">
           <span className="label">Type</span>
           <select className="field" value={draft.type} onChange={(e) => patch({ type: e.target.value as CampaignTypeId })}>
-            {CAMPAIGN_TYPES.filter((t) => t.id !== 'gift').map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+            {CAMPAIGN_TYPES.filter((t) => t.id !== 'gift' && t.id !== 'payroll').map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
           </select>
         </label>
       </div>

@@ -10,8 +10,10 @@ import Create from '@/pages/Create'
 import Dashboard from '@/pages/Dashboard'
 import GiftCreate from '@/pages/GiftCreate'
 import Landing from '@/pages/Landing'
+import Payroll from '@/pages/Payroll'
 import Privacy from '@/pages/Privacy'
 import Recipients from '@/pages/Recipients'
+import SendPayment from '@/pages/SendPayment'
 import Settings from '@/pages/Settings'
 import Verify from '@/pages/Verify'
 
@@ -35,6 +37,8 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/gifts/new" element={<GiftCreate />} />
+            <Route path="/send" element={<SendPayment />} />
+            <Route path="/payroll" element={<Payroll />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/campaigns/new" element={<Create />} />
             <Route path="/campaigns/:id" element={<CampaignDetails />} />

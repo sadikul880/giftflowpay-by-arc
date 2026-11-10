@@ -56,7 +56,7 @@ Each needs reentrancy protection, access control, pause, no unrestricted admin w
 | 0 | Audit and plan | This page |
 | 1 | Landing, dashboard shell, wallet panel, dark emerald theme | Done |
 | 2 | Gift cards: QR, PNG, claim | Done, see the Phase 2 report below. Reuses the existing contract |
-| 3 | Send payment and payroll | One-off payroll needs UI only; recurring needs `PayrollManager` |
+| 3 | Send payment and payroll | Done for one-off payments and payroll, see the Phase 3 report. Recurring payroll still needs `PayrollManager` |
 | 4 | Swap and bridge | Blocked on Circle App Kit key and route verification |
 | 5 | Rewards, company, transactions | Needs `CompanyAccessManager` |
 | 6 | Security, testing, optimization | After each contract change |
@@ -80,6 +80,22 @@ Verified: typecheck, lint, 22 frontend tests (7 existing, 15 new), production bu
 Not verified: a funded end-to-end gift on Arc Testnet. That needs a wallet holding testnet USDC; the cryptography is unit-tested and the contract paths (one-recipient tree, bearer and wallet-bound claims, refund) are covered by the Foundry suite.
 
 Known limits: a gift is public (amount, sender and recipient names, and for wallet gifts the recipient address are onchain). The code and link methods need the funding wallet to sign once. Gift cards use the contract's per-campaign limits.
+
+## Phase 3 report: payments
+
+- **`/send`**: a plain USDC `transfer` to one wallet, with no escrow and no claim step. Balance check, address validation (rejects malformed, zero, USDC-contract and GiftFlowPay-contract addresses), warning for your own wallet, an estimated network fee, a confirmation dialog, and a success screen only after the receipt is confirmed. The fee estimate is gas times the network's fee per gas, shown with 18-decimal precision because Arc pays fees in USDC at 18 decimals while the USDC token has 6.
+- **`/payroll`**: one-off payroll from a table or CSV (wallet, amount, label). Every row needs a wallet. One run creates a private campaign on the existing contract (funds are pulled in one transaction after one approval) and then pushes the money to every wallet with the contract's batch `distribute` (50 wallets per transaction, so 100 employees take 2 payout transactions). Before each batch the app reads which wallets are already paid from the chain, so a resumed run never pays anyone twice. If a payout fails, the unpaid part stays in the contract and the page offers "Continue sending"; whatever is still unpaid after 30 days can be refunded from the campaign page. The page shows "paid, confirmed onchain" counts read from the contract and offers a CSV receipt (label, wallet, amount, paid or unpaid).
+- Shared table: the recipient editor became `src/components/RowsEditor.tsx`, used by campaigns and payroll.
+
+No contract change. Payroll metadata uses the campaign type `payroll`.
+
+Changed: `src/pages/SendPayment.tsx`, `src/pages/Payroll.tsx`, `src/components/RowsEditor.tsx`, `src/components/create/RecipientsStep.tsx`, `src/lib/payroll.ts`, `src/lib/format.ts` (fee formatting), `src/lib/flow.ts`, `src/components/Layout.tsx`, `src/pages/Dashboard.tsx`, `src/App.tsx`, `src/lib/payroll.test.ts`.
+
+Verified: typecheck, lint, 34 frontend tests (12 new: validation, exact amounts, CSV, batching, resume, receipt, fee display), production build; a 100-row CSV imported in a browser (100 employees, 5 pages, 4 transactions, 500 USDC total); send-page address checks.
+
+Not verified: a funded payroll or payment on Arc Testnet (needs a wallet with testnet USDC). The contract side (private campaign, wallet-bound batch distribute up to 100, double-pay protection) is covered by the Foundry suite.
+
+Limits: payroll amounts and wallets are public on the block explorer, as with any transfer. Recurring or scheduled payroll, per-employee streams and company roles need new contracts (`PayrollManager`, `CompanyAccessManager`) and a decision on scope; they are not part of this phase.
 
 ## Phase 1 report
 

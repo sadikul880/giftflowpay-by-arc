@@ -31,7 +31,7 @@ docker run --rm --entrypoint sh -v "$PWD:/app" -w /app ghcr.io/foundry-rs/foundr
 ## Frontend checks
 
 ```bash
-bun run test        # 22 unit tests: codes, open links and claim keys (modes.test.ts); gift plans, metadata, QR round-trip and text wrapping (gift.test.ts)
+bun run test        # 34 unit tests: codes, open links and claim keys (modes.test.ts); gift plans, metadata, QR round-trip and text wrapping (gift.test.ts); payroll validation, batching, resume and receipt, fee display (payroll.test.ts)
 bun run typecheck   # tsc
 bun run lint        # oxlint with type-aware rules
 bun run build       # production build

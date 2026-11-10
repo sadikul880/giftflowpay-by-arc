@@ -12,6 +12,7 @@ export const CAMPAIGN_TYPES = [
   { id: 'grant', label: 'Grants' },
   { id: 'bounty', label: 'Bounties' },
   { id: 'gift', label: 'Gift card' },
+  { id: 'payroll', label: 'Payroll' },
   { id: 'rewards', label: 'Contributor rewards' },
   { id: 'other', label: 'Other' },
 ] as const

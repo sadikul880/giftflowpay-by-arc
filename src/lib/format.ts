@@ -1,4 +1,4 @@
-import { BaseError, ContractFunctionRevertedError } from 'viem'
+import { BaseError, ContractFunctionRevertedError, formatUnits } from 'viem'
 import { formatUsdc } from '@/onchain-money'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -95,4 +95,15 @@ export function explainError(error: unknown): string {
   }
   if (error instanceof Error) return error.message
   return 'Something went wrong. Please try again.'
+}
+
+/** Arc pays network fees in USDC with 18-decimal precision, unlike the 6-decimal USDC token itself. */
+export const NATIVE_DECIMALS = 18
+
+/** A network fee for display: up to six decimals, never rounded down to a misleading zero. */
+export function trimFee(fee: bigint): string {
+  const [int, frac = ''] = formatUnits(fee, NATIVE_DECIMALS).split('.')
+  const cut = frac.slice(0, 6).replace(/0+$/, '')
+  if (cut) return `${int}.${cut}`
+  return int === '0' && fee > 0n ? '< 0.000001' : int
 }

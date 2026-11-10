@@ -9,6 +9,8 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 | `/` | `Landing` | Product overview and live contract totals |
 | `/dashboard` | `Dashboard` | Wallet overview: campaigns, funded, distributed, pending, unclaimed, USDC balance |
 | `/campaigns` | `Campaigns` | List of campaigns with status |
+| `/send` | `SendPayment` | One-wallet USDC transfer with fee estimate |
+| `/payroll` | `Payroll` | CSV or manual payroll: fund once, pay in batches, receipt |
 | `/gifts/new` | `GiftCreate` | Gift card creation, funding, QR code and PNG download |
 | `/campaigns/new` | `Create` | Three-step creation: details, recipients, review and fund |
 | `/campaigns/:id` | `CampaignDetails` | Organizer view: funding, claimed, remaining, refundable, actions, transactions |
@@ -44,6 +46,7 @@ src/
     tree.ts                      Merkle sum tree (matches the contract)
     format.ts                    USDC formatting, error explanations
     network.ts                   active network, contract address, scan window
+    payroll.ts                   payroll validation, batching, receipt CSV
     gift.ts                      gift plans, designs, text wrapping
     giftPng.ts                   canvas renderer for the downloadable gift card PNG
     prefs.ts                     localStorage UI preferences

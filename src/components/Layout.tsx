@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ConnectKitButton } from 'connectkit'
-import { Activity, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, Menu, Settings, TriangleAlert, Wallet, X } from 'lucide-react'
+import { Activity, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, Menu, Send, Settings, TriangleAlert, Users, Wallet, X } from 'lucide-react'
 import { buildAddressExplorerUrl } from '@/onchain-facts'
 import { ACTIVE } from '@/lib/network'
 import { fmtUsd, shortAddr } from '@/lib/format'
@@ -11,6 +11,8 @@ import { Spinner } from './ui'
 const APP_NAV = [
   { to: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard, end: true },
   { to: '/gifts/new', label: 'Gift cards', Icon: Gift, end: true },
+  { to: '/send', label: 'Send payment', Icon: Send, end: true },
+  { to: '/payroll', label: 'Payroll', Icon: Users, end: true },
   { to: '/campaigns', label: 'Campaigns', Icon: Layers, end: false },
   { to: '/campaigns/new', label: 'Create campaign', Icon: CirclePlus, end: true },
   { to: '/activity', label: 'Activity', Icon: Activity, end: false },

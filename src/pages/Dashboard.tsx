@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BadgeCheck, CirclePlus, ExternalLink, Gift, HandCoins, Plus } from 'lucide-react'
+import { ArrowRight, CirclePlus, ExternalLink, Gift, HandCoins, Plus, Send, Users } from 'lucide-react'
 import { CampaignRow } from '@/components/CampaignRow'
 import { HeroCard } from '@/components/HeroCard'
 import { ConnectWalletButton, CopyButton, EmptyState, Skeleton, Stat } from '@/components/ui'
@@ -58,8 +58,9 @@ function WalletPanel() {
 const ACTIONS = [
   { to: '/gifts/new', title: 'Create gift card', body: 'Send USDC as a gift with a link, a QR code and a card image.', Icon: Gift, cta: 'Create gift' },
   { to: '/campaigns/new', title: 'Create campaign', body: 'Fund a payout for a team, a community or a giveaway.', Icon: CirclePlus, cta: 'Create now' },
+  { to: '/send', title: 'Send payment', body: 'Send USDC straight to one wallet.', Icon: Send, cta: 'Send' },
+  { to: '/payroll', title: 'Payroll', body: 'Pay a team from a CSV or a list, in one run.', Icon: Users, cta: 'Run payroll' },
   { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: HandCoins, cta: 'Claim' },
-  { to: '/verify', title: 'Verify', body: 'Check any campaign onchain, no wallet needed.', Icon: BadgeCheck, cta: 'Verify' },
 ]
 
 export default function Dashboard() {
@@ -134,7 +135,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Quick actions">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Quick actions">
         {ACTIONS.map(({ to, title, body, Icon, cta }) => (
           <Link key={to} to={to} className="card group flex flex-col gap-3 p-5 transition-transform hover:-translate-y-0.5">
             <span className="icon-chip size-11"><Icon className="size-5" /></span>
