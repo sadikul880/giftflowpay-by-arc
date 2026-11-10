@@ -21,6 +21,19 @@ const RESOURCES = [
   { to: '/privacy', label: 'Privacy' },
 ]
 
+const SOCIALS = [
+  {
+    href: 'https://x.com/GiftFlowPay',
+    label: 'GiftFlowPay on X',
+    path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+  },
+  {
+    href: 'https://t.me/GiftFlowPay',
+    label: 'GiftFlowPay on Telegram',
+    path: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z',
+  },
+]
+
 const linkClass = 'text-sm underline-offset-4 transition-colors hover:text-[var(--green)] hover:underline'
 
 /** The public site's footer: brand, product and resource links, live network and contract, and the product's promises. */
@@ -50,6 +63,13 @@ export function SiteFooter() {
                   Contract {shortAddr(ACTIVE.contract)} <ExternalLink className="size-3" />
                 </a>
               ) : null}
+            </div>
+            <div className="flex items-center gap-2" aria-label="Social links" role="group">
+              {SOCIALS.map((so) => (
+                <a key={so.href} href={so.href} target="_blank" rel="noopener noreferrer" aria-label={so.label} title={so.label} className="inline-flex size-10 items-center justify-center rounded-full border transition-all hover:-translate-y-0.5 hover:border-[var(--green)] hover:text-[var(--green)] hover:shadow-[0_0_18px_rgba(52,240,138,0.35)]" style={{ borderColor: 'var(--border-strong)', color: 'var(--ink-2)' }}>
+                  <svg viewBox="0 0 24 24" className="size-[18px]" fill="currentColor" aria-hidden="true"><path d={so.path} /></svg>
+                </a>
+              ))}
             </div>
           </div>
 
@@ -83,7 +103,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-xs" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
-          <p>&copy; {YEAR} GiftFlowPay. Testnet product: testnet USDC has no real value, and the contract has not yet had an independent audit.</p>
+          <p>&copy; {YEAR} GiftFlowPay. Built by Sadikul. Testnet product: testnet USDC has no real value, and the contract has not yet had an independent audit.</p>
           <button type="button" className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors hover:border-[var(--green)] hover:text-[var(--green)]" style={{ borderColor: 'var(--border-strong)' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             Back to top <ArrowUp className="size-3.5" />
           </button>
