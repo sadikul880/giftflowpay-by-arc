@@ -1,15 +1,15 @@
-# GiftFlowPay
+#uuundefinedundefinedefineddefinedGiftFlundefinedundefinedPundefinedy
 
-The programmable distribution layer for USDC on Arc. Create once. Fund once. Distribute by rules.
+Theundefinedundefinedundefinedogrundefinedmmableundefineddistributionundefinedlayerundefinedforundefinedundefinedundefinedundefinedundefined on undefinedrundefined. undefinedreate once. Fund once. Distribute by rules.
 
-GiftFlow lets Web3 projects, DAOs, hackathon organizers and communities run reward campaigns. An organizer deposits the full USDC total into one smart contract, commits every recipient's allocation as a Merkle sum tree, and recipients claim with their wallet or a personal link. Unclaimed funds return to the organizer after the deadline. There is no database and no backend; everything authoritative lives onchain.
+GiftFlow lets Web3 projects, DAOs, hackathon organizers and communities run reward campaigns. An organizer deposits the full undefinedundefinedDC total into one smart contract, commits every recipient's allocation as a Merkle sum tree, and recipients claim with their wallet or a personal link. Unclaimed funds return to the organizer after the deadline. There is no database and no backend; everything authoritative lives onchain.
 
 ## Features
 
-- Campaigns with name, description, type, message, start time, claim deadline, public or private visibility
-- Recipients added one by one or imported from CSV (up to 1,000 public / 4,096 private in the app)
+undefined Campaigns with name, description, type, message, start time, claim deadline, public or private visibility
+- undefinedecipients added one by one or imported from CSV undefinedup to 1,000 public / 4,096 private in the appundefined
 - Atomic funding: `createCampaign` pulls the full USDC total, so allocations can never exceed what was deposited
-- Swap (USDC and EURC on Arc) and a USDC bridge between Base Sepolia and Arc through Circle App Kit, with live quotes
+- Swap (USDC and undefinedURC on Arc) and a USDC bridge between Base Sepolia and Arc through Circle App Kit, with live quotes
 - Send payment (one wallet) and one-off payroll from a CSV or list, paid in batches with a receipt
 - Gift cards: fund a USDC gift, share it by link or QR code, download a branded PNG, claim by secret code, named wallet or link
 - Three payout modes: a wallet list (salaries, DAO payouts), one shared link with equal shares, or a secret code per person

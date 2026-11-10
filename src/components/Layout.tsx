@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ConnectKitButton } from 'connectkit'
-import { Activity, ArrowLeftRight, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, Menu, Send, Settings, TriangleAlert, Users, Waypoints, Wallet, X } from 'lucide-react'
+import { Activity, ArrowLeftRight, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, Menu, ReceiptText, Send, Settings, Trophy, TriangleAlert, Users, Waypoints, Wallet, X } from 'lucide-react'
 import { buildAddressExplorerUrl } from '@/onchain-facts'
 import { ACTIVE } from '@/lib/network'
 import { fmtUsd, shortAddr } from '@/lib/format'
@@ -13,11 +13,13 @@ const APP_NAV = [
   { to: '/gifts/new', label: 'Gift cards', Icon: Gift, end: true },
   { to: '/send', label: 'Send payment', Icon: Send, end: true },
   { to: '/payroll', label: 'Payroll', Icon: Users, end: true },
+  { to: '/rewards', label: 'Rewards', Icon: Trophy, end: true },
   { to: '/swap', label: 'Swap', Icon: ArrowLeftRight, end: true },
   { to: '/bridge', label: 'Bridge', Icon: Waypoints, end: true },
   { to: '/campaigns', label: 'Campaigns', Icon: Layers, end: false },
   { to: '/campaigns/new', label: 'Create campaign', Icon: CirclePlus, end: true },
-  { to: '/activity', label: 'Activity', Icon: Activity, end: false },
+  { to: '/transactions', label: 'Transactions', Icon: ReceiptText, end: true },
+  { to: '/activity', label: 'Contract activity', Icon: Activity, end: false },
   { to: '/settings', label: 'Settings', Icon: Settings, end: false },
 ]
 

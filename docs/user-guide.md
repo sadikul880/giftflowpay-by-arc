@@ -23,6 +23,14 @@ You need an EVM wallet (for example MetaMask) on Arc Testnet and some testnet US
 
 Private campaigns: the recipient list is not stored onchain. Keep the CSV you funded with. To manage the campaign later, load the same CSV (same order and amounts) on the Recipients page; it is accepted only if it reproduces the onchain commitment.
 
+## Rewards
+
+Open **Rewards** and pick a type: hackathon prizes, community airdrop, open giveaway, grants, bounties or contributor rewards. The create form opens with the right type and payout mode already selected; adjust anything and fund it. Your latest campaigns are listed below.
+
+## Transactions
+
+Open **Transactions** to see everything the connected wallet has done on Arc Testnet. The first tab lists transactions with a plain label, status and network fee; the second lists token transfers in and out. Each row links to the explorer.
+
 ## Swap
 
 Open **Swap** (Arc Testnet): pick the token you pay and the token you receive (USDC and EURC are built in), enter an amount, choose how much price movement you accept, and press **Review quote**. You see the estimated amount, the minimum you will accept, and the fees. Press the swap button to sign in your wallet. If the quote gets old or you change anything, review again. Swaps are routed through a third-party aggregator (currently LiFi).

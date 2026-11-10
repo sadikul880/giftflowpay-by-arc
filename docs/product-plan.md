@@ -58,7 +58,7 @@ Each needs reentrancy protection, access control, pause, no unrestricted admin w
 | 2 | Gift cards: QR, PNG, claim | Done, see the Phase 2 report below. Reuses the existing contract |
 | 3 | Send payment and payroll | Done for one-off payments and payroll, see the Phase 3 report. Recurring payroll still needs `PayrollManager` |
 | 4 | Swap and bridge | Done for the routes Circle verifies on Arc Testnet, see the Phase 4 report. No kit key was needed |
-| 5 | Rewards, company, transactions | Needs `CompanyAccessManager` |
+| 5 | Rewards, company, transactions | Rewards and transactions done; company management is blocked on a product decision, see the Phase 5 report |
 | 6 | Security, testing, optimization | After each contract change |
 | 7 | Mainnet readiness | Audit first, then explicit approval |
 
@@ -80,6 +80,32 @@ Verified: typecheck, lint, 22 frontend tests (7 existing, 15 new), production bu
 Not verified: a funded end-to-end gift on Arc Testnet. That needs a wallet holding testnet USDC; the cryptography is unit-tested and the contract paths (one-recipient tree, bearer and wallet-bound claims, refund) are covered by the Foundry suite.
 
 Known limits: a gift is public (amount, sender and recipient names, and for wallet gifts the recipient address are onchain). The code and link methods need the funding wallet to sign once. Gift cards use the contract's per-campaign limits.
+
+## Phase 5 report: rewards, transactions and company
+
+**Done**
+
+- **`/rewards`**: six ready-made starting points (hackathon prizes, community airdrop with secret codes, open giveaway with one shared link, grants, bounties, contributor rewards). A card pre-fills the campaign type and payout mode in the create form and opens it; nothing is stored. Below, your latest campaigns, with gift cards and payroll runs hidden because they have their own pages.
+- **`/transactions`**: the connected wallet's full history on Arc Testnet, in two tabs. *Transactions* labels each one from the contract it called and its function selector (funded a campaign, claimed, sent payouts, refunded, cancelled, approved USDC, sent USDC, contract interaction, deployment) with status, network fee and explorer link. *Token transfers* shows USDC, EURC and any other token moved in or out, with the counterparty, flagging tokens that are not USDC or EURC as unverified. Both load older pages on request. This is where swaps and bridges appear too, as transactions and token transfers.
+- Data source: the Arc block explorer's public API (Blockscout), because an RPC cannot list a wallet's history. It is public chain data, every row links to its transaction, and nothing authoritative depends on it: campaign state and balances still come from the contract. The privacy notice says so. The `/activity` page (renamed "Contract activity") still lists the contract's own events for everyone.
+- The labelling was checked against real transactions: the `createCampaign` selector seen on chain equals the one derived from the ABI, and the page labelled this wallet's real history correctly (funded, approved, cancelled, sent payouts).
+
+**Not built: company management**
+
+The prompt asks for a `CompanyAccessManager` contract (company roles). I did not build it, because it changes the architecture and needs your decision first:
+
+- The GiftFlowPay contract gives every campaign to one creator wallet, who alone can pay out, refund or cancel. Roles such as "finance can run payroll but not refund" cannot be enforced by a separate registry unless the money moves through it.
+- *Option A, no new contract*: use a Safe multisig as the company wallet. Payroll and wallet-list campaigns work unchanged. Gift links and secret codes do not, because they derive keys from a deterministic wallet signature, which smart-contract wallets cannot produce.
+- *Option B, new contracts*: a `CompanyTreasury` that holds the USDC and calls GiftFlowPay for the company, with owner, admin and finance roles, an approval step for payroll, and its own Foundry tests (reentrancy, access control, no admin withdrawal). It must be deployed from your wallet, and it adds a second contract to audit.
+- *Not an option*: storing company members in a database or in the browser. That would break the no-backend rule.
+
+Please choose A or B (or drop company management for the MVP). Recurring payroll (`PayrollManager`) belongs with the same decision, because a company treasury is what would hold its funds.
+
+Changed: `src/pages/Transactions.tsx`, `src/pages/Rewards.tsx`, `src/lib/explorerApi.ts`, `src/lib/rewards.ts`, `src/components/Layout.tsx`, `src/pages/Dashboard.tsx`, `src/pages/Privacy.tsx`, `src/App.tsx`, `src/lib/explorerApi.test.ts`.
+
+Verified: typecheck, lint, 51 frontend tests (9 new, built from real explorer responses), production build; in a browser with a read-only stand-in wallet the page listed that wallet's real history with correct labels and amounts, and the airdrop card opened the create form with the airdrop type and secret-code mode selected.
+
+Limits: the explorer index can lag a few seconds behind the chain, and it is a third-party service. If it is down the page says so and offers retry.
 
 ## Phase 4 report: swap and bridge
 

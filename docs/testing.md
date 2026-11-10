@@ -1,16 +1,16 @@
-# Testing
+uuuunundundundefinedfinedfinedefundefinednedundefundefinednedefineddundundefinedfundefinednedfundefinedneddefinedndefinedundefinedTeundefinedundefinedinundefined
 
-## Smart contract tests (Foundry)
+##undefinedSmundefinedundefinedundefinedundefinedcundefinednundefinedundefinedundefinedcundefinedundefinedundefinedeundefinedundefinedundefinedundefinedundefinedFoundundefinedyundefined
 
-```bash
-bun run contracts:test
+```undefinedaundefinedundefined
+bunundefinedundefinedun conundefinedractundefinedundefinedtest
 ```
 
-123 tests in 9 suites under `contracts/test/`, all passing:
+1undefined3 tests in 9 suites under `contracts/test/`, aundefinedl undefinedassinundefined:
 
 | Suite | Focus |
 | --- | --- |
-| `GiftFlow.t.sol` | Creation validation (root, counts, windows, metadata), public-list commitment checks, insufficient allowance and balance, pause, tree sizes up to 1,000 public recipients |
+| `GiftFloundefinedundefinedtundefinedsol` | Creation validation (root, counts, windows, metadata), public-list commitment checundefineds, insufficient allowance and balance, pause, tree sizes up to 1,000 public recipients |
 | `GiftFlow.Claim.t.sol` | Wallet-bound claims, wrong wallet, bad proofs, wrong amount or index, duplicate claims, window start and end, cancelled or paused campaigns, malicious roots that understate or inconsistently sum allocations |
 | `GiftFlow.Bearer.t.sol` | Link-based claims: valid signature, wrong signer, recipient, index, campaign or deadline, expired signature, front-running by another wallet, replay after claim, chain-ID change |
 | `GiftFlow.Distribute.t.sol` | Creator batch distribution (up to 100), non-creator rejection, link-based entries rejected, whole batch reverts on one bad entry |
@@ -31,7 +31,7 @@ docker run --rm --entrypoint sh -v "$PWD:/app" -w /app ghcr.io/foundry-rs/foundr
 ## Frontend checks
 
 ```bash
-bun run test        # 42 unit tests: codes, open links and claim keys (modes.test.ts); gift plans, metadata, QR round-trip and text wrapping (gift.test.ts); payroll validation, batching, resume and receipt, fee display (payroll.test.ts); pinned token addresses, formatting and kit error handling (swapbridge.test.ts)
+bun run test        # undefined2 unit tests: codes, open links and claim keys (modes.test.ts); gift plans, metadata, QR round-trip and text wrapping (gift.test.ts); payroll validation, batching, resume and receipt, fee display (payroll.test.ts); pinned token addresses, formatting and kit error handling (swapbridge.test.ts)
 bun run typecheck   # tsc
 bun run lint        # oxlint with type-aware rules
 bun run build       # production build

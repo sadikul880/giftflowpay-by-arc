@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeftRight, ArrowRight, BadgeCheck, CirclePlus, ExternalLink, Gift, HandCoins, Plus, Send, Users, Waypoints } from 'lucide-react'
+import { ArrowLeftRight, ArrowRight, ExternalLink, Gift, HandCoins, Plus, ReceiptText, Send, Trophy, Users, Waypoints } from 'lucide-react'
 import { CampaignRow } from '@/components/CampaignRow'
 import { HeroCard } from '@/components/HeroCard'
 import { ConnectWalletButton, CopyButton, EmptyState, Skeleton, Stat } from '@/components/ui'
@@ -79,13 +79,13 @@ function WalletPanel() {
 
 const ACTIONS = [
   { to: '/gifts/new', title: 'Create gift card', body: 'Send USDC as a gift with a link, a QR code and a card image.', Icon: Gift, cta: 'Create gift' },
-  { to: '/campaigns/new', title: 'Create campaign', body: 'Fund a payout for a team, a community or a giveaway.', Icon: CirclePlus, cta: 'Create now' },
+  { to: '/rewards', title: 'Community rewards', body: 'Prizes, airdrops, grants and bounties from one funded campaign.', Icon: Trophy, cta: 'Start' },
   { to: '/send', title: 'Send payment', body: 'Send USDC straight to one wallet.', Icon: Send, cta: 'Send' },
   { to: '/payroll', title: 'Payroll', body: 'Pay a team from a CSV or a list, in one run.', Icon: Users, cta: 'Run payroll' },
   { to: '/swap', title: 'Swap', body: 'Swap USDC and EURC on Arc with a live quote.', Icon: ArrowLeftRight, cta: 'Swap' },
   { to: '/bridge', title: 'Bridge', body: 'Move USDC between Base Sepolia and Arc.', Icon: Waypoints, cta: 'Bridge' },
   { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: HandCoins, cta: 'Claim' },
-  { to: '/verify', title: 'Verify', body: 'Check any campaign onchain, no wallet needed.', Icon: BadgeCheck, cta: 'Verify' },
+  { to: '/transactions', title: 'Transactions', body: 'Your wallet history: payouts, claims, swaps and bridges.', Icon: ReceiptText, cta: 'Open' },
 ]
 
 export default function Dashboard() {

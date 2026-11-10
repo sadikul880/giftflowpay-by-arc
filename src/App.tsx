@@ -14,8 +14,10 @@ import Landing from '@/pages/Landing'
 import Payroll from '@/pages/Payroll'
 import Privacy from '@/pages/Privacy'
 import Recipients from '@/pages/Recipients'
+import Rewards from '@/pages/Rewards'
 import SendPayment from '@/pages/SendPayment'
 import Swap from '@/pages/Swap'
+import Transactions from '@/pages/Transactions'
 import Settings from '@/pages/Settings'
 import Verify from '@/pages/Verify'
 
@@ -41,6 +43,8 @@ export default function App() {
             <Route path="/gifts/new" element={<GiftCreate />} />
             <Route path="/send" element={<SendPayment />} />
             <Route path="/payroll" element={<Payroll />} />
+            <Route path="/rewards" element={<Rewards />} />
+            <Route path="/transactions" element={<Transactions />} />
             <Route path="/swap" element={<Swap />} />
             <Route path="/bridge" element={<Bridge />} />
             <Route path="/campaigns" element={<Campaigns />} />

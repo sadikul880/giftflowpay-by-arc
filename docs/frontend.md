@@ -9,6 +9,8 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 | `/` | `Landing` | Product overview and live contract totals |
 | `/dashboard` | `Dashboard` | Wallet overview: campaigns, funded, distributed, pending, unclaimed, USDC balance |
 | `/campaigns` | `Campaigns` | List of campaigns with status |
+| `/rewards` | `Rewards` | Reward campaign starting points and your latest campaigns |
+| `/transactions` | `Transactions` | Wallet history from the explorer index: labelled transactions and token transfers |
 | `/swap` | `Swap` | Swap on Arc Testnet through Circle App Kit, live quote before signing |
 | `/bridge` | `Bridge` | CCTP bridge between Base Sepolia and Arc Testnet with live steps and retry |
 | `/send` | `SendPayment` | One-wallet USDC transfer with fee estimate |
@@ -48,6 +50,8 @@ src/
     tree.ts                      Merkle sum tree (matches the contract)
     format.ts                    USDC formatting, error explanations
     network.ts                   active network, contract address, scan window
+    explorerApi.ts               explorer API client, parsing, transaction labels
+    rewards.ts                   reward campaign presets
     appkit.ts                    lazy Circle App Kit loader, wallet adapter, error messages
     tokens.ts                    verified token and bridge-chain facts, token formatting
     payroll.ts                   payroll validation, batching, receipt CSV
