@@ -1,6 +1,4 @@
-#uuundefinedundefinedefineddefinedGiftFlundefinedundefinedPundefinedy
-
-Theundefinedundefinedundefinedogrundefinedmmableundefineddistributionundefinedlayerundefinedforundefinedundefinedundefinedundefinedundefined on undefinedrundefined. undefinedreate once. Fund once. Distribute by rules.
+Fund once. Distribute by rules.
 
 GiftFlow lets Web3 projects, DAOs, hackathon organizers and communities run reward campaigns. An organizer deposits the full undefinedundefinedDC total into one smart contract, commits every recipient's allocation as a Merkle sum tree, and recipients claim with their wallet or a personal link. Unclaimed funds return to the organizer after the deadline. There is no database and no backend; everything authoritative lives onchain.
 
