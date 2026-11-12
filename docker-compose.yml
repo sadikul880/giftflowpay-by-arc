@@ -1,9 +1,9 @@
 # Coolify: create a "Docker Compose" resource from this repository.
 # Set VITE_GIFTFLOW_ADDRESS_TESTNET in the resource's environment variables
-# and assign the domain to the `web` service (port 80). The `api` service (support and admin) stays internal:
+# and assign the domain to the `web` service (port 80). The `giftflowpay-api` service (support and admin) stays internal:
 # nginx in `web` forwards /api to it. ADMIN_WALLET is the only wallet that gets the admin panel.
 services:
-  api:
+  giftflowpay-api:
     build:
       context: .
       target: api
@@ -23,7 +23,7 @@ services:
         VITE_GIFTFLOW_ADDRESS_TESTNET: ${VITE_GIFTFLOW_ADDRESS_TESTNET:-0xa4b97bda0785ab417d0cce128a9fb9449139ee2c}
     restart: unless-stopped
     depends_on:
-      - api
+      - giftflowpay-api
     environment:
       - SERVICE_FQDN_WEB_80
     expose:

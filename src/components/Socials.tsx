@@ -1,4 +1,4 @@
-/** Official GiftFlowPay channels. One list, so the footers, the Support page and the Feedback page always agree. */
+/** Official GiftFlowPay channels. One list, so the footers, and the Support page always agree. */
 export const SOCIALS = [
   {
     id: 'x',

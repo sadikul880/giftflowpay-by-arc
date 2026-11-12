@@ -34,7 +34,7 @@ Public site (`PublicLayout`): landing, about, privacy, support (inbox with repli
 - Web3: wagmi v2, viem v2, ConnectKit, injected wallets
 - Contracts: Solidity 0.8.28 + Foundry in `contracts/`; tests in `contracts/test/*.t.sol`
 - Chain/token: Arc Testnet (5042002), USDC `0x3600000000000000000000000000000000000000` (6 decimals)
-- Hosting: nginx static build plus the `api` service (`Dockerfile`, `docker-compose.yml`, Coolify-ready)
+- Hosting: nginx static build plus the `giftflowpay-api` service (`Dockerfile`, `docker-compose.yml`, Coolify-ready)
 
 ## Key files
 

@@ -24,8 +24,7 @@ ENV NODE_ENV=production DATA_DIR=/data
 COPY server/package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 COPY server/index.mjs server/app.mjs server/db.mjs ./
-RUN mkdir -p /data && chown node:node /data
-USER node
+RUN mkdir -p /data
 EXPOSE 8787
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s   CMD node -e "fetch('http://127.0.0.1:8787/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 CMD ["node", "--no-warnings", "index.mjs"]

@@ -49,7 +49,7 @@ Deployed contract (Arc Testnet): `0xa4b97bda0785ab417d0cce128a9fb9449139ee2c`. M
 docker compose up -d --build
 ```
 
-`docker-compose.yml` is ready for Coolify (Docker Compose resource, domain on the `web` service, port 80). It also starts the `api` service (Support and Admin, data in the `support-data` volume); set `ADMIN_WALLET` to the wallet that should get the Admin panel. See [docs/deployment.md](docs/deployment.md).
+`docker-compose.yml` is ready for Coolify (Docker Compose resource, domain on the `web` service, port 80). It also starts the `giftflowpay-api` service (Support and Admin, data in the `support-data` volume); set `ADMIN_WALLET` to the wallet that should get the Admin panel. See [docs/deployment.md](docs/deployment.md).
 
 ## Documentation
 

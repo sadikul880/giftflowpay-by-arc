@@ -17,11 +17,13 @@ export async function authed<T>(token: string, path: string, opts: { method?: st
 export function useAdminAddress(): string | null | undefined {
   const q = useQuery({
     queryKey: ['support-config'],
-    queryFn: () => api<{ admin: string | null }>('/config').then((c) => c.admin).catch(() => null),
+    queryFn: () => api<{ admin: string | null }>('/config').then((c) => c.admin),
     staleTime: 5 * 60_000,
-    retry: false,
+    retry: 2,
+    // If the API was unreachable, keep trying so the Admin option appears as soon as it is back.
+    refetchInterval: (query) => (query.state.data === undefined ? 15_000 : false),
   })
-  return q.data
+  return q.data ?? (q.isError ? null : undefined)
 }
 
 /** True only when the connected wallet is the admin wallet. The API checks again on every admin request. */

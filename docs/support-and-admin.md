@@ -22,9 +22,9 @@ The **Admin** entry appears in the dashboard sidebar only while the connected wa
 
 | Variable | Where | Meaning |
 | --- | --- | --- |
-| `ADMIN_WALLET` | the `api` service (`.env` locally, the resource's environment in Coolify) | The one wallet that gets the admin panel. Not a secret, and not read by the browser: the page learns it from `GET /api/config`. If unset or invalid, the admin panel is disabled |
-| `DATA_DIR` | the `api` service | Folder of the SQLite file `support.db` (`/data`, a Docker volume, in compose) |
-| `PORT` | the `api` service | Defaults to 8787 |
+| `ADMIN_WALLET` | the `giftflowpay-api` service (`.env` locally, the resource's environment in Coolify) | The one wallet that gets the admin panel. Not a secret, and not read by the browser: the page learns it from `GET /api/config`. If unset or invalid, the admin panel is disabled |
+| `DATA_DIR` | the `giftflowpay-api` service | Folder of the SQLite file `support.db` (`/data`, a Docker volume, in compose) |
+| `PORT` | the `giftflowpay-api` service | Defaults to 8787 |
 
 Back up the `support-data` volume if the conversations matter. Without it, a redeploy that drops volumes loses them.
 
