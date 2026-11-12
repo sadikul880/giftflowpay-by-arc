@@ -74,7 +74,7 @@ export default function Swap() {
   const usesCustom = from === 'custom' || to === 'custom'
   const customProblem = usesCustom && (!customAddress ? 'Enter the token contract address.' : !customToken.isLoading && !customToken.isToken ? 'That address is not an ERC-20 token on Arc Testnet.' : undefined)
   const sameToken = from === to
-  const request = { tokenIn: a.sdk, tokenOut: b.sdk, amountIn: amount.trim(), config: { slippageBps: slippage } }
+  const request = { tokenIn: a.sdk, tokenOut: b.sdk, amountIn: amount.trim(), config: { slippageBps: slippage, allowanceStrategy: 'approve' as const } }
   const key = JSON.stringify(request)
   const inputDecimals = Math.min(a.read.decimals ?? 6, MAX_INPUT_DECIMALS)
   const ready = amountOk(amount, a.read.decimals ?? 6) && !sameToken && !customProblem && !customToken.isLoading
