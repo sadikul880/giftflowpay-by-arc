@@ -12,3 +12,6 @@ traces.jsonl
 .circle
 recovery_file*
 .claude
+data
+server/data
+server/node_modules

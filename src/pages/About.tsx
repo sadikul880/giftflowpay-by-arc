@@ -21,7 +21,7 @@ export default function About() {
           GiftFlowPay helps projects, DAOs, hackathon organizers and teams pay many people at once with USDC: reward campaigns, bounties, grants, airdrops and salaries. You fund a campaign once and the smart contract enforces who can claim what, and when.
         </p>
         <p>
-          It is non-custodial. There is no GiftFlowPay account, no database and no server that holds your money or your keys. Everything that matters lives in a smart contract on {ACTIVE.label}, and anyone can check it on the public verification page of every campaign.
+          It is non-custodial. There is no GiftFlowPay account and no server that holds your money or your keys. The only thing we store is the Support inbox, if you choose to write to us. Everything that matters lives in a smart contract on {ACTIVE.label}, and anyone can check it on the public verification page of every campaign.
         </p>
       </section>
 

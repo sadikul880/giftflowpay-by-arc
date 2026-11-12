@@ -5,6 +5,7 @@
 | Variable | Where | Meaning |
 | --- | --- | --- |
 | `VITE_GIFTFLOW_ADDRESS_TESTNET` | build time | Address of the deployed `GiftFlow` contract on Arc Testnet. Vite inlines it, so rebuild after changing it |
+| `ADMIN_WALLET` | the `api` service | The wallet that gets the Admin panel (support inbox, users, statistics). Read by the Support API at runtime; the compose file defaults to the project admin wallet |
 | `OWNER_ADDRESS`, `FORGE_ACCOUNT` | contract deployment only | Admin address (pause and cap) and the name of a Foundry keystore |
 
 Copy `.env.example` to `.env` for local work. `.env` is git-ignored. No private key is ever stored in the repository or passed on a command line.
@@ -45,7 +46,7 @@ bun run build      # production build into dist/
 
 ## Docker
 
-The image is a multi-stage build: Bun builds the static site, nginx serves it. nginx falls back to `index.html` for client-side routes, caches hashed assets for a year, and exposes `/healthz`.
+The Dockerfile has two deployable targets. `web` (default): Bun builds the static site, nginx serves it and forwards `/api` to the `api` service. `api`: the Support service (Node 22 with SQLite and `viem`). Compose starts both. nginx falls back to `index.html` for client-side routes, caches hashed assets for a year, and exposes `/healthz`.
 
 ```bash
 docker compose up -d --build     # container port 80
@@ -61,7 +62,7 @@ Set the contract address with `VITE_GIFTFLOW_ADDRESS_TESTNET` (the compose file 
 4. Deploy. The health check hits `/healthz`.
 5. After changing the contract address, redeploy so the image is rebuilt.
 
-No volumes, databases or other services are needed.
+Two services start: `web` and `api`. Give your domain to `web` only; `api` stays internal and keeps its SQLite file in the `support-data` volume (keep this volume, and back it up if you care about the conversations). Set `ADMIN_WALLET` in the resource environment if it should differ from the default. See [support-and-admin.md](support-and-admin.md).
 
 ## RPC capacity
 

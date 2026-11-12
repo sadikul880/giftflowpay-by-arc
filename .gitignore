@@ -11,3 +11,7 @@ console.jsonl
 !.env.example
 .claude/
 broadcast/
+
+# Support API database
+data/
+server/data/

@@ -35,9 +35,6 @@ Open **Transactions** to see everything the connected wallet has done on Arc Tes
 
 Open **Swap** (Arc Testnet): pick the token you pay and the token you receive (USDC and EURC are built in), enter an amount, choose how much price movement you accept, and press **Review quote**. You see the estimated amount, the minimum you will accept, and the fees. Press the swap button to sign in your wallet. If the quote gets old or you change anything, review again. Swaps are routed through a third-party aggregator (currently LiFi).
 
-## Bridge
-
-Open **Bridge** to move USDC between Base Sepolia and Arc Testnet. Choose the direction, enter an amount and review the quote. By default Circle's forwarding service finishes the transfer for you, so you need no gas on the destination chain. During the bridge your wallet asks you to approve and burn on the source chain; the page shows each step with explorer links. If a step fails, press **Continue from the failed step** instead of starting again. Keep the page open until it finishes.
 
 ## Send payment
 

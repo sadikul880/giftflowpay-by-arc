@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeftRight, ArrowRight, ExternalLink, Gift, HandCoins, Plus, ReceiptText, Send, Trophy, Users, Waypoints } from 'lucide-react'
+import { ArrowLeftRight, ArrowRight, ExternalLink, Gift, HandCoins, Plus, ReceiptText, Send, Trophy, Users } from 'lucide-react'
 import { CampaignRow } from '@/components/CampaignRow'
 import { HeroCard } from '@/components/HeroCard'
 import { ConnectWalletButton, CopyButton, EmptyState, Skeleton, Stat } from '@/components/ui'
 import { useCampaignPages, useGlobals, useNow, useUsdcBalance, useWallet } from '@/hooks/useFlow'
 import { useToken } from '@/hooks/useToken'
 import { fetchTransactions, labelTx } from '@/lib/explorerApi'
-import { ARC_EURC, BASE_SEPOLIA_USDC, fmtToken } from '@/lib/tokens'
+import { ARC_CIRBTC, ARC_EURC, fmtToken } from '@/lib/tokens'
 import { campaignState, remainingOf } from '@/lib/flow'
 import { fmtUsd, shortAddr } from '@/lib/format'
 import { ACTIVE } from '@/lib/network'
@@ -16,10 +16,10 @@ import { buildAddressExplorerUrl, buildTxExplorerUrl } from '@/onchain-facts'
 
 function OtherBalances({ owner }: { owner: `0x${string}` }) {
   const eurc = useToken(ARC_EURC, owner)
-  const base = useToken(BASE_SEPOLIA_USDC, owner)
+  const cirbtc = useToken(ARC_CIRBTC, owner)
   const rows = [
     { label: 'EURC on Arc', t: eurc },
-    { label: 'USDC on Base Sepolia', t: base },
+    { label: 'cirBTC on Arc', t: cirbtc },
   ]
   return (
     <ul className="space-y-1.5 text-sm" aria-label="Other balances">
@@ -120,9 +120,8 @@ const ACTIONS = [
   { to: '/send', title: 'Send payment', body: 'Send USDC straight to one wallet.', Icon: Send, cta: 'Send' },
   { to: '/payroll', title: 'Payroll', body: 'Pay a team from a CSV or a list, in one run.', Icon: Users, cta: 'Run payroll' },
   { to: '/swap', title: 'Swap', body: 'Swap USDC, EURC and cirBTC on Arc with a live quote.', Icon: ArrowLeftRight, cta: 'Swap' },
-  { to: '/bridge', title: 'Bridge', body: 'Move USDC between Base Sepolia and Arc, in or out.', Icon: Waypoints, cta: 'Bridge' },
   { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: HandCoins, cta: 'Claim' },
-  { to: '/transactions', title: 'Transactions', body: 'Your wallet history: payouts, claims, swaps and bridges.', Icon: ReceiptText, cta: 'Open' },
+  { to: '/transactions', title: 'Transactions', body: 'Your wallet history: payouts, claims and swaps.', Icon: ReceiptText, cta: 'Open' },
 ]
 
 export default function Dashboard() {

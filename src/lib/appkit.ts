@@ -2,8 +2,8 @@ import type { AppKit } from '@circle-fin/app-kit'
 import type { EIP1193Provider } from 'viem'
 
 /**
- * Circle App Kit is large, so it is loaded only when a swap or bridge page asks for it.
- * No kit key is used: swap and bridge run permissionless from the browser, signed by the user's own wallet.
+ * Circle App Kit is large, so it is loaded only when the swap page asks for it.
+ * No kit key is used: swaps run permissionless from the browser, signed by the user's own wallet.
  */
 let kit: Promise<AppKit> | undefined
 export function loadKit(): Promise<AppKit> {

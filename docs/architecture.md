@@ -2,16 +2,16 @@
 
 ## Principles
 
-- **No application database, no server-side storage.** The shipped container is nginx serving static files.
+- **Money has no server.** Nothing about funds, campaigns or claims is stored off chain. The one exception is the Support inbox: a small API with SQLite holds support conversations, see [support-and-admin.md](support-and-admin.md). The site works without it; only Support and Admin need it.
 - **The contract is the source of truth.** Funding, claims, refunds and cancellations are contract state. The UI never reports success before a transaction receipt is confirmed.
 - **History comes from events and reads.** Dashboards, campaign pages and activity feeds are built from `getCampaign`, `isClaimed` and the contract's logs.
-- **Browser storage is for preferences only.** `localStorage` holds three UI settings (`giftflow:prefs`): default visibility, default claim window, compact tables.
+- **Browser storage is small.** `localStorage` holds three UI settings (`giftflow:prefs`): default visibility, default claim window, compact tables. `sessionStorage` holds the Support session token for that tab.
 
 ## Components
 
 ```
 Organizer / recipient browser
-  React app (static files, served by nginx)
+  React app (static files, served by nginx; /api is forwarded to the Support API)
     wagmi + viem      -> injected wallet (MetaMask etc.)
     viem public client -> Arc RPC (reads, getLogs)
                                |

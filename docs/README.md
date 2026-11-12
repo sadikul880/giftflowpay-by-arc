@@ -10,6 +10,7 @@ GiftFlow is a non-custodial USDC distribution platform on Arc. An organizer crea
 | [claim-links-and-security.md](claim-links-and-security.md) | Merkle sum tree, claim keys, link formats, threat model |
 | [frontend.md](frontend.md) | Pages, source layout, hooks, wallet and transaction handling |
 | [user-guide.md](user-guide.md) | Step-by-step for organizers and recipients |
+| [support-and-admin.md](support-and-admin.md) | Support inbox, admin panel, the API behind them, what is stored |
 | [deployment.md](deployment.md) | Arc Testnet deployment, environment variables, Docker and Coolify |
 | [testing.md](testing.md) | Contract tests, frontend checks, live end-to-end script |
 | [audit.md](audit.md) | Findings, fixes and known limits from the latest review |

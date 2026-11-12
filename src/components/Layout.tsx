@@ -2,11 +2,12 @@ import { Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, useLocation, useOutlet } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ConnectKitButton } from 'connectkit'
-import { Activity, ArrowLeftRight, ArrowUpRight, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, LifeBuoy, Menu, MessageSquareText, ReceiptText, Send, Settings, Trophy, TriangleAlert, Users, Waypoints, Wallet, X } from 'lucide-react'
+import { Activity, ArrowLeftRight, BadgeCheck, CirclePlus, Gift, HandCoins, Layers, LayoutDashboard, LifeBuoy, Menu, ReceiptText, Send, Settings, ShieldCheck, Trophy, TriangleAlert, Users, Wallet, X } from 'lucide-react'
 import { buildAddressExplorerUrl } from '@/onchain-facts'
 import { ACTIVE } from '@/lib/network'
 import { fmtUsd, shortAddr } from '@/lib/format'
 import { useUsdcBalance, useWallet } from '@/hooks/useFlow'
+import { useIsAdmin, useUnreadReplies } from '@/hooks/useSupport'
 import { ErrorBoundary } from './ErrorBoundary'
 import { Skeleton, Spinner } from './ui'
 import { CursorFx } from './fx'
@@ -20,8 +21,6 @@ const APP_NAV = [
   { to: '/payroll', label: 'Payroll', Icon: Users, end: true },
   { to: '/rewards', label: 'Rewards', Icon: Trophy, end: true },
   { to: '/swap', label: 'Swap', Icon: ArrowLeftRight, end: true },
-  { to: '/bridge', label: 'Bridge', Icon: Waypoints, end: true },
-  { to: '/bridge?dir=out', label: 'Bridge out', Icon: ArrowUpRight, end: true },
   { to: '/campaigns', label: 'Campaigns', Icon: Layers, end: false },
   { to: '/campaigns/new', label: 'Create campaign', Icon: CirclePlus, end: true },
   { to: '/transactions', label: 'Transactions', Icon: ReceiptText, end: true },
@@ -33,7 +32,6 @@ const APP_LINKS = [
   { to: '/claim', label: 'Claim USDC', Icon: HandCoins },
   { to: '/verify', label: 'Verify a campaign', Icon: BadgeCheck },
   { to: '/support', label: 'Support', Icon: LifeBuoy },
-  { to: '/feedback', label: 'Feedback', Icon: MessageSquareText },
 ]
 
 const PUBLIC_NAV = [
@@ -165,11 +163,10 @@ function Footer() {
       <nav className="mb-3 flex items-center justify-center gap-4 text-sm" aria-label="Footer">
         <Link to="/about" className="underline-offset-2 hover:underline">About</Link>
         <Link to="/support" className="underline-offset-2 hover:underline">Support</Link>
-        <Link to="/feedback" className="underline-offset-2 hover:underline">Feedback</Link>
         <Link to="/privacy" className="underline-offset-2 hover:underline">Privacy</Link>
       </nav>
       <div className="mb-3 flex justify-center"><SocialLinks size="sm" /></div>
-      <p>GiftFlowPay is non-custodial. Campaign funds sit in a smart contract on {ACTIVE.label}; there is no database or backend.</p>
+      <p>GiftFlowPay is non-custodial. Campaign funds sit in a smart contract on {ACTIVE.label}; only the Support inbox is stored on our server.</p>
       {ACTIVE.contract ? (
         <a className="mono mt-1 inline-block underline underline-offset-2" href={buildAddressExplorerUrl(ACTIVE.chainId, ACTIVE.contract)} target="_blank" rel="noopener noreferrer">
           Contract {shortAddr(ACTIVE.contract)}
@@ -220,8 +217,9 @@ export function PublicLayout() {
 }
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
-  const { pathname, search } = useLocation()
-  const bridgeOut = pathname === '/bridge' && new URLSearchParams(search).get('dir') === 'out'
+  const { pathname } = useLocation()
+  const isAdmin = useIsAdmin()
+  const unreplies = useUnreadReplies()
   return (
     <div className="flex h-full flex-col gap-6">
       <div className="px-2 pt-1">
@@ -229,18 +227,22 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </div>
       <nav className="flex flex-col gap-1" aria-label="App">
         {APP_NAV.map(({ to, label, Icon, end }) => (
-          <NavLink key={to} to={to} end={end} onClick={onNavigate} className={({ isActive }) => {
-            // The two bridge entries share a path, so the query decides which one is lit.
-            const on = to === '/bridge' ? isActive && !bridgeOut : to === '/bridge?dir=out' ? bridgeOut : isActive && !(to === '/campaigns' && pathname === '/campaigns/new')
-            return `sidebar-link ${on ? 'active' : ''}`
-          }}>
+          <NavLink key={to} to={to} end={end} onClick={onNavigate} className={({ isActive }) => `sidebar-link ${isActive && !(to === '/campaigns' && pathname === '/campaigns/new') ? 'active' : ''}`}>
             <Icon className="size-[18px]" /> {label}
           </NavLink>
         ))}
+        {isAdmin ? (
+          <NavLink to="/admin" onClick={onNavigate} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            <ShieldCheck className="size-[18px]" /> Admin
+          </NavLink>
+        ) : null}
         <div className="label mt-4 px-3.5 pb-1">Public pages</div>
         {APP_LINKS.map(({ to, label, Icon }) => (
           <NavLink key={to} to={to} onClick={onNavigate} className="sidebar-link">
             <Icon className="size-[18px]" /> {label}
+            {to === '/support' && unreplies > 0 ? (
+              <span className="ml-auto rounded-full px-2 py-0.5 text-xs font-semibold" style={{ background: 'var(--green)', color: 'var(--on-accent)' }} aria-label={`${unreplies} new ${unreplies === 1 ? 'reply' : 'replies'}`}>{unreplies}</span>
+            ) : null}
           </NavLink>
         ))}
       </nav>

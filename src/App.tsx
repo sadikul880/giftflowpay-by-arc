@@ -6,14 +6,13 @@ import Landing from '@/pages/Landing'
 
 // Every page except the landing page loads on demand, so a visitor only downloads the code of the pages they open.
 const About = lazy(() => import('@/pages/About'))
+const Admin = lazy(() => import('@/pages/Admin'))
 const Activity = lazy(() => import('@/pages/Activity'))
-const Bridge = lazy(() => import('@/pages/Bridge'))
 const CampaignDetails = lazy(() => import('@/pages/CampaignDetails'))
 const Campaigns = lazy(() => import('@/pages/Campaigns'))
 const Claim = lazy(() => import('@/pages/Claim'))
 const Create = lazy(() => import('@/pages/Create'))
 const Dashboard = lazy(() => import('@/pages/Dashboard'))
-const Feedback = lazy(() => import('@/pages/Feedback'))
 const GiftCreate = lazy(() => import('@/pages/GiftCreate'))
 const Gifts = lazy(() => import('@/pages/Gifts'))
 const Payroll = lazy(() => import('@/pages/Payroll'))
@@ -38,7 +37,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/support" element={<Support />} />
-            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/feedback" element={<Navigate to="/support" replace />} />
             <Route path="/claim" element={<Claim />} />
             <Route path="/claim/:id" element={<Claim />} />
             <Route path="/verify" element={<Verify />} />
@@ -55,13 +54,13 @@ export default function App() {
             <Route path="/rewards" element={<Rewards />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/swap" element={<Swap />} />
-            <Route path="/bridge" element={<Bridge />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/campaigns/new" element={<Create />} />
             <Route path="/campaigns/:id" element={<CampaignDetails />} />
             <Route path="/campaigns/:id/recipients" element={<Recipients />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/admin" element={<Admin />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

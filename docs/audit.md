@@ -2,7 +2,7 @@
 
 ## Phase 6 review, 2026-11-11
 
-Scope: the whole product after Phases 1 to 5 (gifts, payroll, payments, swap and bridge, rewards, transactions). Engineering review by the maintainers' tooling, not a third-party audit.
+Scope: the whole product after Phases 1 to 5 (gifts, payroll, payments, swap, rewards, transactions). Engineering review by the maintainers' tooling, not a third-party audit.
 
 ### Smart contract
 
@@ -14,10 +14,10 @@ Unchanged since the last review; no defects found. New evidence:
 
 ### Frontend
 
-- **Links from outside the app** (explorer URLs returned by the swap and bridge kit) are now followed only if they are plain http(s) (`src/lib/safeUrl.ts`), so a `javascript:` URL could never run on click. Covered by tests.
+- **Links from outside the app** (explorer URLs returned by the swap kit) are now followed only if they are plain http(s) (`src/lib/safeUrl.ts`), so a `javascript:` URL could never run on click. Covered by tests.
 - **Content-Security-Policy.** nginx now sends a real CSP: scripts only from our own origin (the bundle has no inline scripts and needs no eval), styles from our origin plus Google Fonts, images from our origin, data and blob URLs and https, `connect-src` https and wss (the app talks to public RPCs, the explorer API and Circle and LiFi services chosen at runtime), no framing, no plugins. It was tested in a browser against the production build: dashboard, wallet connection, a live swap quote through the lazily loaded App Kit, the bridge page and the gift page all ran with **zero CSP violations**.
 - Secrets: claim keys, master secrets and codes live only in the URL fragment or in memory; no secret is written to storage, logs or a query string. `localStorage` still holds three interface preferences only.
-- No private key, API key or kit key is used or stored anywhere in the app. Swap and bridge are permissionless and signed by the user's own wallet.
+- No private key, API key or kit key is used or stored anywhere in the app. Swap is permissionless and signed by the user's own wallet.
 
 ### Dependencies
 
@@ -33,7 +33,7 @@ Unchanged since the last review; no defects found. New evidence:
 
 - The public Arc RPC and the explorer API rate-limit heavy use; use a dedicated RPC for a launch with many simultaneous claimants.
 - The contract has still not had an independent audit. Do that before real value is held.
-- `connect-src` allows any https host because the swap and bridge services are chosen at runtime. Narrow it if the set of services becomes fixed.
+- `connect-src` allows any https host because the swap services are chosen at runtime. Narrow it if the set of services becomes fixed.
 
 ## Earlier review, 2026-11-05
 

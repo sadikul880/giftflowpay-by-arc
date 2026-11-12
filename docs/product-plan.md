@@ -121,6 +121,8 @@ Limits: the explorer index can lag a few seconds behind the chain, and it is a t
 
 ## Phase 4 report: swap and bridge
 
+> Update 2026-11-12: the bridge described below (`/bridge`) was removed on request. Swap remains, now with cirBTC. This report is kept as the record of what was built and verified at the time.
+
 Built on Circle App Kit (`@circle-fin/app-kit` 1.21, `@circle-fin/adapter-viem-v2` 1.20), loaded lazily so the rest of the app stays small. Swap and bridge are permissionless: **no kit key and no backend are used**, and the user's own wallet signs every transaction. Nothing is hard-coded: quotes, fees and routes come live from the kit.
 
 - **`/swap`**: swap on Arc Testnet between USDC and EURC (or any ERC-20 by contract address, shown as unverified). Flow: choose tokens and amount, pick a slippage tolerance (0.5%, 1%, 3%), **Review quote** (live `estimateSwap`), see the estimated and minimum output, fees and network, then click the swap button. Quotes expire after 60 seconds and any change of input invalidates them. USDC to native is not offered, because on Arc native gas and USDC are the same asset. Users are told the trade is routed through a third-party aggregator (currently LiFi).

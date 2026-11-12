@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight, ArrowLeftRight, BadgeCheck, Building2, CheckCircle2, ChevronDown, Gift, KeyRound, Landmark, Link2, ListChecks, Lock,
-  ShieldCheck, Trophy, Undo2, Users, Waypoints,
+  ShieldCheck, Trophy, Undo2, Users,
 } from 'lucide-react'
 import { HeroCard } from '@/components/HeroCard'
 import { Magnetic, Reveal, SpotCard } from '@/components/fx'
@@ -15,7 +15,7 @@ import { ACTIVE } from '@/lib/network'
 // three.js is large, so the 3D hero is fetched separately; the flat card shows until (or instead of) it.
 const Hero3D = lazy(() => import('@/components/Hero3D'))
 
-const CAPABILITIES = ['Gift cards', 'Payroll', 'Community rewards', 'Secret codes', 'QR claim links', 'CSV import', 'Swap', 'Bridge', 'Refund after expiry', 'Public verification', 'Direct payments', 'Wallet history']
+const CAPABILITIES = ['Gift cards', 'Payroll', 'Community rewards', 'Secret codes', 'QR claim links', 'CSV import', 'Swap', 'Refund after expiry', 'Public verification', 'Direct payments', 'Wallet history']
 
 const USE_CASES = [
   { Icon: Users, title: 'Teams and payroll', body: 'Pay a whole team from a CSV. Fund once, and every wallet is paid in batches, with a receipt you can download.', to: '/payroll', cta: 'Run payroll' },
@@ -44,7 +44,7 @@ const TRUST = [
 ]
 
 const FAQ = [
-  { q: 'Who holds the money?', a: 'The GiftFlowPay smart contract holds it from the moment you fund a campaign. There is no account with us, no database and no server that can move your funds.' },
+  { q: 'Who holds the money?', a: 'The GiftFlowPay smart contract holds it from the moment you fund a campaign. There is no account with us and no server that can move your funds.' },
   { q: 'What happens if nobody claims?', a: 'After the claim deadline you can refund everything that was not claimed to your wallet, once. Before a campaign starts you can cancel it for a full refund.' },
   { q: 'Do recipients need crypto already?', a: 'They need a wallet and a small amount of USDC to pay the network fee, because Arc uses USDC for gas. Everything else comes with the claim link.' },
   { q: 'Can the owner take the funds or change a campaign?', a: 'No. The owner can pause the contract and set a spending cap for new campaigns. There is no withdrawal function, and refunds and cancellations keep working while paused.' },
@@ -124,7 +124,7 @@ export default function Landing() {
             </Reveal>
             <Reveal delay={0.32}>
               <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm" style={{ color: 'var(--muted)' }}>
-                {['No database', 'Funds held by the contract', 'Refund after expiry', 'Public verification'].map((t) => (
+                {['No custody', 'Funds held by the contract', 'Refund after expiry', 'Public verification'].map((t) => (
                   <li key={t} className="inline-flex items-center gap-1.5"><CheckCircle2 className="size-4" style={{ color: 'var(--green)' }} /> {t}</li>
                 ))}
               </ul>
@@ -236,7 +236,7 @@ export default function Landing() {
       </Section>
 
       {/* Product showcase */}
-      <Section eyebrow="The product" title="Everything in one dashboard" intro="Wallet, balances, gift cards, payroll, swap and bridge, with live data from Arc.">
+      <Section eyebrow="The product" title="Everything in one dashboard" intro="Wallet, balances, gift cards, payroll and swap, with live data from Arc.">
         <div className="grid items-start gap-6 lg:grid-cols-[1.25fr_0.75fr]">
           <Reveal><TiltFrame src="/landing/dashboard.webp" alt="The GiftFlowPay dashboard showing a wallet, balances and actions" /></Reveal>
           <div className="space-y-6">
@@ -246,7 +246,7 @@ export default function Landing() {
         </div>
         <Reveal>
           <ul className="grid gap-3 text-sm sm:grid-cols-3">
-            {[[ArrowLeftRight, 'Swap USDC and EURC on Arc with a live quote'], [Waypoints, 'Bridge USDC between Base Sepolia and Arc'], [Building2, 'Payroll for a team, from a CSV']].map(([Icon, text]) => {
+            {[[ArrowLeftRight, 'Swap USDC and EURC on Arc with a live quote'], [Building2, 'Payroll for a team, from a CSV']].map(([Icon, text]) => {
               const I = Icon as typeof Building2
               return <li key={text as string} className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ borderColor: 'var(--border)' }}><I className="size-5 shrink-0" style={{ color: 'var(--green)' }} /> {text as string}</li>
             })}

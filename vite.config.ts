@@ -62,8 +62,11 @@ export default defineConfig({
     // they split React from the libraries that import it and the app failed to start.
     rollupOptions: { shimMissingExports: true },
   },
+  // The support API (server/) runs beside the dev server; in production nginx forwards /api to it.
   server: {
     allowedHosts: true,
     cors: true,
+    proxy: { '/api': 'http://127.0.0.1:8787' },
   },
+  preview: { proxy: { '/api': 'http://127.0.0.1:8787' } },
 })

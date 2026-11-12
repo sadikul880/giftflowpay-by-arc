@@ -13,15 +13,12 @@ const PRODUCT = [
   { to: '/rewards', label: 'Community rewards' },
   { to: '/send', label: 'Send payment' },
   { to: '/swap', label: 'Swap' },
-  { to: '/bridge', label: 'Bridge' },
-  { to: '/bridge?dir=out', label: 'Bridge out' },
 ]
 const RESOURCES = [
   { to: '/about', label: 'About' },
   { to: '/claim', label: 'Claim USDC' },
   { to: '/verify', label: 'Verify a campaign' },
   { to: '/support', label: 'Support' },
-  { to: '/feedback', label: 'Feedback' },
   { to: '/privacy', label: 'Privacy' },
 ]
 
@@ -78,7 +75,7 @@ export function SiteFooter() {
         </div>
 
         <ul className="mt-12 grid gap-3 text-xs sm:grid-cols-3" style={{ color: 'var(--muted)' }}>
-          {['Non-custodial: funds sit in a smart contract', 'No database and no backend', 'Every campaign is publicly verifiable'].map((t) => (
+          {['Non-custodial: funds sit in a smart contract', 'No account needed: your wallet is your login', 'Every campaign is publicly verifiable'].map((t) => (
             <li key={t} className="rounded-xl border px-4 py-3" style={{ borderColor: 'var(--border)', background: 'rgba(255,255,255,0.015)' }}>{t}</li>
           ))}
         </ul>
@@ -88,7 +85,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-6 text-xs" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
-          <p>&copy; {YEAR} GiftFlowPay. Built by Sadikul. Testnet product: testnet USDC has no real value, and the contract has not yet had an independent audit.</p>
+          <p>&copy; {YEAR} GiftFlowPay. Testnet product: testnet USDC has no real value, and the contract has not yet had an independent audit.</p>
           <button type="button" className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium transition-colors hover:border-[var(--green)] hover:text-[var(--green)]" style={{ borderColor: 'var(--border-strong)' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             Back to top <ArrowUp className="size-3.5" />
           </button>

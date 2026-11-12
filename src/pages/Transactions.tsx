@@ -86,7 +86,7 @@ export default function Transactions() {
 
   return (
     <div>
-      <PageHeader title="Transactions" subtitle="Everything your wallet has done on Arc Testnet: campaigns, payouts, claims, swaps and bridges." />
+      <PageHeader title="Transactions" subtitle="Everything your wallet has done on Arc Testnet: campaigns, payouts, claims and swaps." />
 
       {!w.isConnected || !me ? (
         <EmptyState title="Connect your wallet" body="Connect a wallet to see its history." action={<ConnectWalletButton />} />

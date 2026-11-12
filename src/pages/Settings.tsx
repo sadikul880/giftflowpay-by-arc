@@ -99,7 +99,7 @@ export default function Settings() {
             <span className="text-sm">Default claim window (days)</span>
             <input type="number" min={1} max={730} className="field !w-24 tabular-nums" value={prefs.defaultWindowDays} onChange={(e) => update({ defaultWindowDays: Math.min(730, Math.max(1, Number(e.target.value) || 30)) })} />
           </label>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>Preferences are stored in this browser only. Campaigns, allocations, claims and refunds live on the blockchain; GiftFlowPay has no database.</p>
+          <p className="text-xs" style={{ color: 'var(--muted)' }}>Preferences are stored in this browser only. Campaigns, allocations, claims and refunds live on the blockchain. The only data we keep on our server is your Support messages.</p>
         </div>
       </section>
 

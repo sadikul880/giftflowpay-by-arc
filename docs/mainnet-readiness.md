@@ -5,7 +5,7 @@ Status: **not ready, and deliberately not configured.** Nothing in the repositor
 ## 1. Gates before any mainnet deployment
 
 1. **Independent security audit** of `contracts/GiftFlow.sol` by a third party, with all findings fixed or accepted in writing. The project's own review ([audit.md](audit.md)) is not a substitute.
-2. **A live, funded run on Arc Testnet** of every flow you will offer (gift by code, by wallet and by link; payroll; refund; cancel; swap; bridge). The local-chain test proves the logic, not the wallet experience.
+2. **A live, funded run on Arc Testnet** of every flow you will offer (gift by code, by wallet and by link; payroll; refund; cancel; swap). The local-chain test proves the logic, not the wallet experience.
 3. **Decisions still open**: company management (Safe or new contracts), recurring payroll. See [feature-status.md](feature-status.md).
 4. **Your explicit approval** to deploy. No script or workflow in this repository does it automatically.
 
@@ -30,7 +30,7 @@ Verify each on docs.arc.io and developers.circle.com on the day you deploy, and 
 The app is testnet-only by construction (`src/lib/network.ts` exposes only `NETWORKS.testnet`). To add mainnet:
 
 1. Add a `mainnet` entry to `NETWORKS` with its own `VITE_GIFTFLOW_ADDRESS_MAINNET`, USDC address and explorer, and a clear network switch or a separate deployment (a separate Coolify app with its own domain is the safest way to keep them apart).
-2. Add the mainnet chain to `src/config.ts` and its Circle chain keys to `src/lib/tokens.ts` and the swap and bridge pages. Keep testnet and mainnet tokens in separate tables.
+2. Add the mainnet chain to `src/config.ts` and its Circle chain keys to `src/lib/tokens.ts` and the swap page. Keep testnet and mainnet tokens in separate tables.
 3. Show a persistent "Mainnet: real funds" banner, and warn before any amount above a threshold (for example 100 USDC) as the Circle skills require.
 4. Review `security-headers.inc` (`connect-src`) and the privacy notice for any new services.
 5. Re-run the full checks: `bun run check`, `bun test src`, `forge test`, `bun run e2e:local`, and a funded run on the new network with small amounts.

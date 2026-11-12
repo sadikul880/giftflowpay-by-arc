@@ -20,6 +20,11 @@ jobs:
       - run: bun run typecheck
       - run: bun run lint:ci
       - run: bun test src
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Support API tests
+        run: node --test --no-warnings server/app.test.mjs
       - name: Production build (same 1.28 GB heap cap as the Docker image)
         run: node --max-old-space-size=1280 node_modules/vite/bin/vite.js build
         env:

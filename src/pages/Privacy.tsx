@@ -5,7 +5,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
   {
     title: 'What GiftFlowPay does not collect',
     body: [
-      'GiftFlowPay has no accounts, no database and no backend. We do not ask for your name, email or phone number, we do not use cookies for tracking, and we run no analytics or advertising scripts.',
+      'GiftFlowPay has no accounts. Campaigns, balances, claims and refunds live on the blockchain, not on our server. We do not ask for your name, email or phone number, we do not use cookies for tracking, and we run no analytics or advertising scripts. The one thing we do store is Support, described below.',
       'We never see or store your private keys or seed phrase. Your wallet signs transactions and messages; the app only receives the result.',
     ],
   },
@@ -24,9 +24,17 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
     ],
   },
   {
+    title: 'Support messages',
+    body: [
+      'If you write to us on the Support page, we store on our server: your wallet address, the messages you and our team write, the time of each, and the times you signed in. Nothing else about you is collected.',
+      'To open Support you sign a free message with your wallet. That proves the wallet is yours; it sends no transaction and gives us no access to your funds. The sign-in gives your browser tab a temporary session token (kept in sessionStorage, valid for 12 hours); the server keeps only a hash of it.',
+      'Your messages can be read by the GiftFlowPay team through the admin panel, which only the administrator wallet can open. Nobody else can read them. Please do not write secrets: never send a seed phrase, a private key or a full claim link. Conversations are kept until the administrator removes them.',
+    ],
+  },
+  {
     title: 'Data stored in your browser',
     body: [
-      'Only interface preferences are saved in your browser (default visibility, default claim window and table density). Campaign drafts live in memory and disappear when you reload the page.',
+      'Interface preferences are saved in your browser (default visibility, default claim window and table density). While you are signed in to Support, a temporary session token is kept for that browser tab only. Campaign drafts live in memory and disappear when you reload the page.',
     ],
   },
   {
@@ -35,8 +43,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       'To read the blockchain, your browser talks directly to public Arc RPC providers. They can see your IP address and which contract data you request, as with any blockchain app. Looking up names (ENS) uses a public Ethereum RPC provider in the same way.',
       'The page loads its fonts from Google Fonts, which sees your IP address when the page loads.',
       'The Transactions page asks the Arc block explorer\u2019s public index for the history of the wallet you connected, so the explorer sees that wallet address and your IP address, as it would for anyone browsing the explorer. Nothing is requested until you open that page.',
-      'If you use Swap or Bridge, your browser also contacts Circle\u2019s App Kit services and, for swaps, a third-party DEX aggregator (currently LiFi) to get quotes and route the trade. They see your wallet address, the tokens and the amounts involved, as in any swap. Nothing is sent unless you open those pages and ask for a quote.',
-      'Support and Feedback have no server behind them. The buttons there open Telegram or X in a new tab with the text you wrote, and you decide whether to send it from your own account. Links to our X and Telegram pages are ordinary links: those services see your visit only if you click.',
+      'If you use Swap, your browser also contacts Circle\u2019s App Kit services and, for swaps, a third-party DEX aggregator (currently LiFi) to get quotes and route the trade. They see your wallet address, the tokens and the amounts involved, as in any swap. Nothing is sent unless you open those pages and ask for a quote.',
       'Your wallet extension and the website host (for example your hosting provider) keep their own technical logs under their own policies.',
     ],
   },

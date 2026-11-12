@@ -19,14 +19,15 @@ Compared with the GiftFlowPay master prompt (the Phase 0 audit in [product-plan.
 | 11 | Direct USDC payments | Done | `/send`, with address checks and a fee estimate |
 | 12 | Company payroll, CSV and manual | Partial | One-off payroll done (fund once, pay in batches, resume, receipt). Recurring or scheduled payroll needs the new `PayrollManager` contract |
 | 13 | Community reward campaigns | Done | Presets, wallet list, shared link, secret codes |
-| 14 | Swap and bridge | Done on testnet | Live USDC, EURC and cirBTC quotes on Arc Testnet; CCTP bridge in (Base Sepolia to Arc) and bridge out (Arc to Base Sepolia), both reachable from the sidebar |
+| 14 | Swap | Done on testnet | Live USDC, EURC and cirBTC quotes on Arc Testnet. The cross-chain bridge was built and then **removed on request** (2026-11-12) |
 | 15 | Arc, Base and supported token balances | Partial | Arc USDC and EURC and Base Sepolia USDC shown. Other tokens only through the swap page's address field |
 | 16 | EURC and cirBTC | Done on testnet | Both are in the swap token list. cirBTC (`0xf0C4…32BF`, 8 decimals, "Circle Wrapped Bitcoin") comes from Circle App Kit's built-in token registry, and the contract on Arc Testnet reports symbol cirBTC. Whether a quote exists for a pair depends on live testnet liquidity; "no route" is shown plainly. It is wrapped Bitcoin, not native BTC |
 | 17 | Transaction history | Done | Wallet history (labelled transactions and token transfers) plus contract-wide activity |
 | 18 | Company management | **Not built** | Needs a product decision (Safe multisig or new `CompanyTreasury` contracts); see the Phase 5 report |
 | 19 | Security and settings | Done | Allowance revoke, preferences, CSP, error boundary |
-| 20 | Support and feedback | Done | `/support` (contact, common problems, self-check tools) and `/feedback` (suggestion or issue, opt-in technical details, preview). There is no backend, so feedback is sent by the user from their own Telegram or X account, or copied |
-| 21 | Official social links | Done | X `https://x.com/GiftFlowPay` and Telegram `https://t.me/GiftFlowPay` in both footers, Support and Feedback |
+| 20 | Support and feedback | Done | One page, `/support`: a signed-in user writes to the team inside the site and reads the replies later. Stored by a small API with SQLite (`server/`), see [support-and-admin.md](support-and-admin.md). `/feedback` redirects to it |
+| 22 | Admin panel | Done | `/admin`, shown in the dashboard sidebar only for the wallet in `ADMIN_WALLET`: inbox with replies, users with pagination, statistics |
+| 21 | Official social links | Done | X `https://x.com/GiftFlowPay` and Telegram `https://t.me/GiftFlowPay` in both footers and Support |
 
 ## Platform requirements
 
@@ -34,14 +35,14 @@ Compared with the GiftFlowPay master prompt (the Phase 0 audit in [product-plan.
 | --- | --- | --- |
 | Separate landing page and dashboard | Done | `PublicLayout` and `AppLayout` |
 | Dark emerald design, responsive | Done | Checked at 375 px on every route: no horizontal overflow |
-| No database, no backend, no mock data | Done | All state is contract reads, events and the public explorer index |
+| No custody, no mock data | Done | Campaigns, balances and claims are contract reads, events and the public explorer index. The only server-side data is the Support inbox |
 | Smart contracts: reentrancy, access control, replay protection, expiry and refund, pause, no admin withdrawal | Done | One `GiftFlow` contract; 123 tests, 10,000-run fuzzing, invariants, 98.7% line coverage |
 | Separate `GiftCardEscrow`, `RewardCampaignManager` | By design | The single contract does both jobs |
 | `PayrollManager`, `CompanyAccessManager` | **Not built** | See rows 12 and 18 |
 | Arc Testnet deployment and docs | Done | Contract `0xa4b9…ee2c`; Docker and Coolify files |
 | Mainnet | **Deliberately not configured** | See [mainnet-readiness.md](mainnet-readiness.md) |
 | Independent security audit | **Not done** | Required before real value |
-| Live funded run on Arc Testnet of gifts, payroll, swap and bridge | **Not done** | Needs a wallet with testnet USDC. The same logic runs end to end on a local chain (`bun run e2e:local`) and live quotes were checked read-only |
+| Live funded run on Arc Testnet of gifts, payroll and swap | **Not done** | Needs a wallet with testnet USDC. The same logic runs end to end on a local chain (`bun run e2e:local`) and live quotes were checked read-only |
 
 ## Ideas from the reference design that were left out on purpose
 
