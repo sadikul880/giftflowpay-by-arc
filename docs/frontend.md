@@ -12,8 +12,8 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 | `/gifts` | `Gifts` | Your gift cards; each opens its details page (refund, and link, QR, code and PNG again by signing) |
 | `/rewards` | `Rewards` | Reward campaign starting points and your latest campaigns |
 | `/transactions` | `Transactions` | Wallet history from the explorer index: labelled transactions and token transfers |
-| `/swap` | `Swap` | Swap on Arc Testnet through Circle App Kit, live quote before signing |
-| `/bridge` | `Bridge` | CCTP bridge between Base Sepolia and Arc Testnet with live steps and retry |
+| `/swap` | `Swap` | Swap USDC, EURC and cirBTC on Arc Testnet through Circle App Kit, live quote before signing |
+| `/bridge` | `Bridge` | CCTP bridge with live steps and retry. Bridge in (Base Sepolia to Arc) and bridge out (Arc to Base Sepolia); `/bridge?dir=out` opens bridge out |
 | `/send` | `SendPayment` | One-wallet USDC transfer with fee estimate |
 | `/payroll` | `Payroll` | CSV or manual payroll: fund once, pay in batches, receipt |
 | `/gifts/new` | `GiftCreate` | Gift card creation, funding, QR code and PNG download |
@@ -24,11 +24,13 @@ React 18 + Vite + TypeScript, Tailwind CSS, wagmi v2 / viem v2 with an injected 
 | `/verify`, `/verify/:id` | `Verify` | Public verification page, no wallet needed |
 | `/activity` | `Activity` | Paginated event history |
 | `/settings` | `Settings` | Network facts, USDC balance and allowance (with revoke), UI preferences |
+| `/support` | `Support` | Contact on X and Telegram, common problems, self-check tools |
+| `/feedback` | `Feedback` | Suggestion or issue form; opens Telegram or X with the text, or copies it (no backend) |
 | `/about`, `/privacy` | `About`, `Privacy` | What GiftFlow is and what data it does and does not touch |
 
 Campaign states shown in the UI are derived from contract data: `scheduled`, `active`, `completed`, `expired`, `cancelled`. A draft exists only in memory before the creation transaction (`useDraft`).
 
-The app has two shells (`src/components/Layout.tsx`). `PublicLayout` (top bar, no sidebar) serves `/`, `/about`, `/privacy`, `/claim` and `/verify`, which recipients and auditors open from a link. `AppLayout` (fixed sidebar, slide-over menu on phones) serves the organizer pages: `/dashboard`, `/campaigns*`, `/activity` and `/settings`. Design tokens (near-black surfaces, emerald borders, neon green actions) are CSS variables in `src/index.css`.
+The app has two shells (`src/components/Layout.tsx`). `PublicLayout` (top bar, no sidebar) serves `/`, `/about`, `/privacy`, `/support`, `/feedback`, `/claim` and `/verify`, which recipients and auditors open from a link. `AppLayout` (fixed sidebar, slide-over menu on phones) serves the organizer pages: `/dashboard`, `/campaigns*`, `/activity` and `/settings`. Design tokens (near-black surfaces, emerald borders, neon green actions) are CSS variables in `src/index.css`.
 
 ## Source layout
 
@@ -59,6 +61,7 @@ src/
     payroll.ts                   payroll validation, batching, receipt CSV
     gift.ts                      gift plans, designs, text wrapping
     giftPng.ts                   canvas renderer for the downloadable gift card PNG
+    feedback.ts                  feedback text, Telegram and X links (pure, tested)
     prefs.ts                     localStorage UI preferences
     share.ts                     share-link helpers
     transport.ts                 Arc RPC transport: batching plus provider fallback

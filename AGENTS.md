@@ -14,7 +14,7 @@ Non-custodial USDC campaigns. An organizer deposits the whole total into `GiftFl
 
 ## Product map
 
-Public site (`PublicLayout`): landing, about, privacy, claim, verify. App (`AppLayout`): dashboard, gift cards (`/gifts`, `/gifts/new`), send payment, payroll, rewards, transactions, swap, bridge, campaigns, contract activity, settings. Gifts and payroll are one-recipient and wallet-list campaigns on the same contract, distinguished by the public metadata (`t`: gift, payroll; `k`: list, open, codes; `g`: gift details). Status of every requested feature, with the open items (company management, recurring payroll, embedded-wallet login, WalletConnect, cirBTC, mainnet, audit): `docs/feature-status.md`.
+Public site (`PublicLayout`): landing, about, privacy, support, feedback, claim, verify. App (`AppLayout`): dashboard, gift cards (`/gifts`, `/gifts/new`), send payment, payroll, rewards, transactions, swap, bridge, campaigns, contract activity, settings. Gifts and payroll are one-recipient and wallet-list campaigns on the same contract, distinguished by the public metadata (`t`: gift, payroll; `k`: list, open, codes; `g`: gift details). Status of every requested feature, with the open items (company management, recurring payroll, embedded-wallet login, WalletConnect, mainnet, audit): `docs/feature-status.md`.
 
 ## Design notes
 

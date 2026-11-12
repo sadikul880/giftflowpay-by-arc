@@ -119,8 +119,8 @@ const ACTIONS = [
   { to: '/rewards', title: 'Community rewards', body: 'Prizes, airdrops, grants and bounties from one funded campaign.', Icon: Trophy, cta: 'Start' },
   { to: '/send', title: 'Send payment', body: 'Send USDC straight to one wallet.', Icon: Send, cta: 'Send' },
   { to: '/payroll', title: 'Payroll', body: 'Pay a team from a CSV or a list, in one run.', Icon: Users, cta: 'Run payroll' },
-  { to: '/swap', title: 'Swap', body: 'Swap USDC and EURC on Arc with a live quote.', Icon: ArrowLeftRight, cta: 'Swap' },
-  { to: '/bridge', title: 'Bridge', body: 'Move USDC between Base Sepolia and Arc.', Icon: Waypoints, cta: 'Bridge' },
+  { to: '/swap', title: 'Swap', body: 'Swap USDC, EURC and cirBTC on Arc with a live quote.', Icon: ArrowLeftRight, cta: 'Swap' },
+  { to: '/bridge', title: 'Bridge', body: 'Move USDC between Base Sepolia and Arc, in or out.', Icon: Waypoints, cta: 'Bridge' },
   { to: '/claim', title: 'Claim USDC', body: 'Open a claim link or enter a secret code.', Icon: HandCoins, cta: 'Claim' },
   { to: '/transactions', title: 'Transactions', body: 'Your wallet history: payouts, claims, swaps and bridges.', Icon: ReceiptText, cta: 'Open' },
 ]

@@ -36,6 +36,7 @@ const SECTIONS: Array<{ title: string; body: string[] }> = [
       'The page loads its fonts from Google Fonts, which sees your IP address when the page loads.',
       'The Transactions page asks the Arc block explorer\u2019s public index for the history of the wallet you connected, so the explorer sees that wallet address and your IP address, as it would for anyone browsing the explorer. Nothing is requested until you open that page.',
       'If you use Swap or Bridge, your browser also contacts Circle\u2019s App Kit services and, for swaps, a third-party DEX aggregator (currently LiFi) to get quotes and route the trade. They see your wallet address, the tokens and the amounts involved, as in any swap. Nothing is sent unless you open those pages and ask for a quote.',
+      'Support and Feedback have no server behind them. The buttons there open Telegram or X in a new tab with the text you wrote, and you decide whether to send it from your own account. Links to our X and Telegram pages are ordinary links: those services see your visit only if you click.',
       'Your wallet extension and the website host (for example your hosting provider) keep their own technical logs under their own policies.',
     ],
   },

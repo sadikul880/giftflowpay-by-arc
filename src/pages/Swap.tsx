@@ -8,12 +8,13 @@ import { useNow, useWallet } from '@/hooks/useFlow'
 import { useToken } from '@/hooks/useToken'
 import { kitMessage, loadKit, walletAdapter } from '@/lib/appkit'
 import { safeHttpUrl } from '@/lib/safeUrl'
-import { fmtToken, isWrappedBitcoin, parseTokenAddress, ARC_EURC, ARC_USDC } from '@/lib/tokens'
+import { fmtToken, isWrappedBitcoin, parseTokenAddress, ARC_CIRBTC, ARC_EURC, ARC_USDC } from '@/lib/tokens'
 import { ACTIVE } from '@/lib/network'
-import { parseUsdc } from '@/onchain-money'
 import type { SwapEstimate, SwapResult } from '@circle-fin/app-kit'
 
-type Choice = 'USDC' | 'EURC' | 'custom'
+type Choice = 'USDC' | 'EURC' | 'cirBTC' | 'custom'
+/** Most decimals the amount box accepts: the token's own, never more than 8. */
+const MAX_INPUT_DECIMALS = 8
 const SLIPPAGE = [
   { bps: 50, label: '0.5%' },
   { bps: 100, label: '1%' },
@@ -29,9 +30,13 @@ interface Reviewed {
   account: Address
 }
 
-function amountOk(v: string): boolean {
+/** A positive amount with no more decimals than the token has. */
+function amountOk(v: string, decimals: number): boolean {
+  const x = v.trim()
+  if (!/^d*.?d*$/.test(x) || x === '' || x === '.') return false
+  if ((x.split('.')[1] ?? '').length > decimals) return false
   try {
-    return parseUsdc(v.trim()) > 0n
+    return parseUnits(x, decimals) > 0n
   } catch {
     return false
   }
@@ -56,10 +61,12 @@ export default function Swap() {
   const customToken = useToken(customAddress ? { address: customAddress, chainId: ACTIVE.chainId } : undefined, w.address)
   const usdc = useToken(ARC_USDC, w.address)
   const eurc = useToken(ARC_EURC, w.address)
+  const cirbtc = useToken(ARC_CIRBTC, w.address)
 
   const info = (c: Choice) =>
     c === 'USDC' ? { label: 'USDC', sdk: 'USDC', read: usdc }
     : c === 'EURC' ? { label: 'EURC', sdk: 'EURC', read: eurc }
+    : c === 'cirBTC' ? { label: 'cirBTC', sdk: 'cirBTC', read: cirbtc }
     : { label: customToken.symbol ?? 'Custom token', sdk: customAddress ?? '', read: customToken }
   const a = info(from)
   const b = info(to)
@@ -69,7 +76,8 @@ export default function Swap() {
   const sameToken = from === to
   const request = { tokenIn: a.sdk, tokenOut: b.sdk, amountIn: amount.trim(), config: { slippageBps: slippage } }
   const key = JSON.stringify(request)
-  const ready = amountOk(amount) && !sameToken && !customProblem && !customToken.isLoading
+  const inputDecimals = Math.min(a.read.decimals ?? 6, MAX_INPUT_DECIMALS)
+  const ready = amountOk(amount, a.read.decimals ?? 6) && !sameToken && !customProblem && !customToken.isLoading
   const stale = reviewed ? reviewed.key !== key || reviewed.account !== w.address || now - reviewed.at > QUOTE_TTL_SECONDS : false
   const balance = a.read.balance !== undefined && a.read.decimals !== undefined ? fmtToken(a.read.balance, a.read.decimals) : undefined
   const short = ready && a.read.balance !== undefined && a.read.decimals !== undefined && parseUnits(amount.trim(), a.read.decimals) > a.read.balance
@@ -129,19 +137,20 @@ export default function Swap() {
     >
       <option value="USDC">USDC</option>
       <option value="EURC">EURC</option>
+      <option value="cirBTC">cirBTC</option>
       <option value="custom">Other token…</option>
     </select>
   )
 
   return (
     <div className="mx-auto max-w-xl">
-      <PageHeader title="Swap" subtitle={`Swap tokens on ${ACTIVE.label}. You see a live quote before anything is signed, and your wallet signs the swap.`} />
+      <PageHeader title="Swap" subtitle={`Swap USDC, EURC and cirBTC on ${ACTIVE.label}. You see a live quote before anything is signed, and your wallet signs the swap.`} />
       <div className="card space-y-5 p-5 sm:p-6">
         <div className="space-y-2">
           <div className="flex items-center justify-between"><span className="label">You pay</span><span className="text-xs tabular-nums" style={{ color: 'var(--muted)' }}>Balance {balance ?? '-'}</span></div>
           <div className="flex gap-2">
             {pick('from')}
-            <input className="field tabular-nums" inputMode="decimal" placeholder="0.00" aria-label="Amount to sell" value={amount} onChange={(e) => { const v = e.target.value.replace(/[^0-9.]/g, ''); if (/^\d*\.?\d{0,6}$/.test(v)) setAmount(v) }} />
+            <input className="field tabular-nums" inputMode="decimal" placeholder="0.00" aria-label="Amount to sell" value={amount} onChange={(e) => { const v = e.target.value.replace(/[^0-9.]/g, ''); if (new RegExp(`^\\d*\\.?\\d{0,${inputDecimals}}$`).test(v)) setAmount(v) }} />
           </div>
         </div>
         <div className="flex justify-center">
@@ -177,7 +186,9 @@ export default function Swap() {
           <p className="text-xs" style={{ color: 'var(--muted)' }}>The swap fails instead of paying a worse price than this. Tighter protects you more but fails more often.</p>
         </div>
 
+        {from === 'cirBTC' || to === 'cirBTC' ? <Notice>cirBTC is wrapped Bitcoin on Arc, not native BTC. Its value depends on the wrapping contract and the reserve behind it. Testnet cirBTC has no real value.</Notice> : null}
         {sameToken ? <Notice tone="error">Pick two different tokens.</Notice> : null}
+        {amount && (amount.split('.')[1] ?? '').length > (a.read.decimals ?? 6) ? <Notice tone="error">{a.label} supports at most {a.read.decimals ?? 6} decimals.</Notice> : null}
         {short ? <Notice tone="error">Your {a.label} balance is lower than this amount.</Notice> : null}
         {error ? <Notice tone="error">{error}</Notice> : null}
 

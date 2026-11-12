@@ -13,6 +13,7 @@ const Campaigns = lazy(() => import('@/pages/Campaigns'))
 const Claim = lazy(() => import('@/pages/Claim'))
 const Create = lazy(() => import('@/pages/Create'))
 const Dashboard = lazy(() => import('@/pages/Dashboard'))
+const Feedback = lazy(() => import('@/pages/Feedback'))
 const GiftCreate = lazy(() => import('@/pages/GiftCreate'))
 const Gifts = lazy(() => import('@/pages/Gifts'))
 const Payroll = lazy(() => import('@/pages/Payroll'))
@@ -21,6 +22,7 @@ const Recipients = lazy(() => import('@/pages/Recipients'))
 const Rewards = lazy(() => import('@/pages/Rewards'))
 const SendPayment = lazy(() => import('@/pages/SendPayment'))
 const Settings = lazy(() => import('@/pages/Settings'))
+const Support = lazy(() => import('@/pages/Support'))
 const Swap = lazy(() => import('@/pages/Swap'))
 const Transactions = lazy(() => import('@/pages/Transactions'))
 const Verify = lazy(() => import('@/pages/Verify'))
@@ -35,6 +37,8 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="/claim" element={<Claim />} />
             <Route path="/claim/:id" element={<Claim />} />
             <Route path="/verify" element={<Verify />} />

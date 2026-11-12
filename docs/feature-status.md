@@ -1,6 +1,6 @@
 # Feature status
 
-Compared with the GiftFlowPay master prompt (the Phase 0 audit in [product-plan.md](product-plan.md) has the history). Status: **Done** (built and checked), **Partial**, **Not built** (with the reason and what it needs). Last updated 2026-11-11.
+Compared with the GiftFlowPay master prompt (the Phase 0 audit in [product-plan.md](product-plan.md) has the history). Status: **Done** (built and checked), **Partial**, **Not built** (with the reason and what it needs). Last updated 2026-11-12.
 
 ## Product features
 
@@ -19,12 +19,14 @@ Compared with the GiftFlowPay master prompt (the Phase 0 audit in [product-plan.
 | 11 | Direct USDC payments | Done | `/send`, with address checks and a fee estimate |
 | 12 | Company payroll, CSV and manual | Partial | One-off payroll done (fund once, pay in batches, resume, receipt). Recurring or scheduled payroll needs the new `PayrollManager` contract |
 | 13 | Community reward campaigns | Done | Presets, wallet list, shared link, secret codes |
-| 14 | Swap and bridge | Done on testnet | Live USDC and EURC quotes on Arc Testnet; CCTP bridge between Base Sepolia and Arc Testnet |
+| 14 | Swap and bridge | Done on testnet | Live USDC, EURC and cirBTC quotes on Arc Testnet; CCTP bridge in (Base Sepolia to Arc) and bridge out (Arc to Base Sepolia), both reachable from the sidebar |
 | 15 | Arc, Base and supported token balances | Partial | Arc USDC and EURC and Base Sepolia USDC shown. Other tokens only through the swap page's address field |
-| 16 | EURC and cirBTC | Partial | EURC done. **cirBTC not built**: no verified contract address or support entry exists in Circle's documentation or the App Kit package. The label "wrapped Bitcoin, not native BTC" is in place for a token that reports that symbol |
+| 16 | EURC and cirBTC | Done on testnet | Both are in the swap token list. cirBTC (`0xf0C4…32BF`, 8 decimals, "Circle Wrapped Bitcoin") comes from Circle App Kit's built-in token registry, and the contract on Arc Testnet reports symbol cirBTC. Whether a quote exists for a pair depends on live testnet liquidity; "no route" is shown plainly. It is wrapped Bitcoin, not native BTC |
 | 17 | Transaction history | Done | Wallet history (labelled transactions and token transfers) plus contract-wide activity |
 | 18 | Company management | **Not built** | Needs a product decision (Safe multisig or new `CompanyTreasury` contracts); see the Phase 5 report |
 | 19 | Security and settings | Done | Allowance revoke, preferences, CSP, error boundary |
+| 20 | Support and feedback | Done | `/support` (contact, common problems, self-check tools) and `/feedback` (suggestion or issue, opt-in technical details, preview). There is no backend, so feedback is sent by the user from their own Telegram or X account, or copied |
+| 21 | Official social links | Done | X `https://x.com/GiftFlowPay` and Telegram `https://t.me/GiftFlowPay` in both footers, Support and Feedback |
 
 ## Platform requirements
 

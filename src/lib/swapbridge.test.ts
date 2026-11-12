@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { arcTestnet, baseSepolia } from 'viem/chains'
 import { isNoRoute, kitMessage } from './appkit'
 import { safeHttpUrl } from './safeUrl'
-import { ARC_EURC, ARC_USDC, BASE_SEPOLIA_USDC, BRIDGE_CHAINS, fmtToken, isWrappedBitcoin, parseTokenAddress, SWAP_TOKENS } from './tokens'
+import { ARC_CIRBTC, ARC_EURC, ARC_USDC, BASE_SEPOLIA_USDC, BRIDGE_CHAINS, fmtToken, isWrappedBitcoin, parseTokenAddress, SWAP_TOKENS } from './tokens'
 
 describe('verified token and chain facts', () => {
   // Expected values are copied from Circle's published USDC and EURC testnet contract-address tables.
@@ -10,6 +10,8 @@ describe('verified token and chain facts', () => {
     expect(ARC_USDC.address).toBe('0x3600000000000000000000000000000000000000')
     expect(ARC_EURC.address).toBe('0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a')
     expect(BASE_SEPOLIA_USDC.address).toBe('0x036CbD53842c5426634e7929541eC2318f3dCF7e')
+    // cirBTC: Circle App Kit's built-in registry entry for Arc Testnet; the contract answers symbol cirBTC, 8 decimals.
+    expect(ARC_CIRBTC.address).toBe('0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF')
   })
 
   test('chain ids come from viem, and bridge chains use App Kit identifiers', () => {
@@ -21,9 +23,9 @@ describe('verified token and chain facts', () => {
     expect(Object.keys(BRIDGE_CHAINS)).toEqual(['Arc_Testnet', 'Base_Sepolia'])
   })
 
-  test('swap tokens are all on Arc Testnet and none is a guessed cirBTC address', () => {
+  test('swap tokens are all on Arc Testnet, in the order USDC, EURC, cirBTC', () => {
     expect(SWAP_TOKENS.every((t) => t.chainId === arcTestnet.id)).toBe(true)
-    expect(SWAP_TOKENS.map((t) => t.symbol)).toEqual(['USDC', 'EURC'])
+    expect(SWAP_TOKENS.map((t) => t.symbol)).toEqual(['USDC', 'EURC', 'cirBTC'])
   })
 })
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ArrowLeftRight, CheckCircle2, ExternalLink, RefreshCw } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { type EIP1193Provider } from 'viem'
 import { toast } from 'sonner'
@@ -16,8 +17,8 @@ type Direction = 'in' | 'out'
 const QUOTE_TTL_SECONDS = 90
 
 const ROUTES: Record<Direction, { from: BridgeChain; to: BridgeChain; title: string }> = {
-  in: { from: BRIDGE_CHAINS.Base_Sepolia, to: BRIDGE_CHAINS.Arc_Testnet, title: 'Base Sepolia to Arc Testnet' },
-  out: { from: BRIDGE_CHAINS.Arc_Testnet, to: BRIDGE_CHAINS.Base_Sepolia, title: 'Arc Testnet to Base Sepolia' },
+  in: { from: BRIDGE_CHAINS.Base_Sepolia, to: BRIDGE_CHAINS.Arc_Testnet, title: 'Bridge in: Base Sepolia to Arc Testnet' },
+  out: { from: BRIDGE_CHAINS.Arc_Testnet, to: BRIDGE_CHAINS.Base_Sepolia, title: 'Bridge out: Arc Testnet to Base Sepolia' },
 }
 
 type Estimate = EstimateResult<string, string>
@@ -48,7 +49,10 @@ export default function Bridge() {
   const { switchChainAsync } = useSwitchChain()
   const now = useNow(5000)
 
-  const [dir, setDir] = useState<Direction>('in')
+  // The direction lives in the URL (/bridge?dir=out), so the Bridge out link opens straight onto it.
+  const [params, setParams] = useSearchParams()
+  const dir: Direction = params.get('dir') === 'out' ? 'out' : 'in'
+  const setDir = (d: Direction) => setParams(d === 'out' ? { dir: 'out' } : {}, { replace: true })
   const [amount, setAmount] = useState('')
   const [forward, setForward] = useState(true)
   const [reviewed, setReviewed] = useState<Reviewed>()

@@ -6,7 +6,7 @@ Status: **not ready, and deliberately not configured.** Nothing in the repositor
 
 1. **Independent security audit** of `contracts/GiftFlow.sol` by a third party, with all findings fixed or accepted in writing. The project's own review ([audit.md](audit.md)) is not a substitute.
 2. **A live, funded run on Arc Testnet** of every flow you will offer (gift by code, by wallet and by link; payroll; refund; cancel; swap; bridge). The local-chain test proves the logic, not the wallet experience.
-3. **Decisions still open**: company management (Safe or new contracts), recurring payroll, cirBTC. See [feature-status.md](feature-status.md).
+3. **Decisions still open**: company management (Safe or new contracts), recurring payroll. See [feature-status.md](feature-status.md).
 4. **Your explicit approval** to deploy. No script or workflow in this repository does it automatically.
 
 ## 2. Facts that must come from official documentation

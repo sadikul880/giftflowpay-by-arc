@@ -133,7 +133,7 @@ Verified live against Arc Testnet with the real kit (read-only, throwaway key, n
 Not verified: a completed swap or bridge with a real signature (needs a wallet with testnet USDC and gas on both chains).
 
 Limits and open items:
-- **cirBTC**: no verified contract address or support entry was found in Circle's documentation or the App Kit package, so it is not offered. The custom-token field accepts an address, reads its symbol and decimals from the chain, labels anything reporting the symbol cirBTC as wrapped Bitcoin (not native BTC), and always marks custom tokens unverified. Please supply the official address if cirBTC support is required.
+- **cirBTC** (added 2026-11-12): the installed App Kit (1.21.0) ships a cirBTC entry for Arc Testnet (`0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF`, 8 decimals) and the contract was read back on the Arc RPC (symbol cirBTC, name "Circle Wrapped Bitcoin"). It is offered in Swap next to USDC and EURC. A quote for any pair still depends on live testnet liquidity. The custom-token field remains for other tokens and always marks them unverified.
 - **Base mainnet and other chains**: the app is testnet-only by design. App Kit supports many more chains, but they are not enabled, and mainnet needs your explicit go-ahead.
 - Cross-chain swaps and multi-leg routes are not offered; only same-chain swaps on Arc Testnet and the USDC bridge.
 - The bridge page keeps progress in memory. If the tab is closed mid-transfer, use the transaction links already shown and check the explorer before retrying.
