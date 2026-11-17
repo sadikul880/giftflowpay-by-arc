@@ -15,14 +15,20 @@ export async function authed<T>(token: string, path: string, opts: { method?: st
 
 /** The wallet that has the admin panel, as the API reports it. Undefined while loading, null if there is none or no API. */
 export function useAdminAddress(): string | null | undefined {
+  const { isConnected } = useAccount()
   const q = useQuery({
     queryKey: ['support-config'],
+    // Only wallets can be admin, so nothing is asked until one is connected.
+    enabled: isConnected,
     queryFn: () => api<{ admin: string | null }>('/config').then((c) => c.admin),
     staleTime: 5 * 60_000,
-    retry: 2,
-    // If the API was unreachable, keep trying so the Admin option appears as soon as it is back.
-    refetchInterval: (query) => (query.state.data === undefined ? 15_000 : false),
+    retry: 1,
+    // Every component that asks shares this one query. After a failure it is retried once a minute, not on every mount.
+    retryOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: (query) => (query.state.status === 'error' ? 60_000 : false),
   })
+  if (!isConnected) return null
   return q.data ?? (q.isError ? null : undefined)
 }
 

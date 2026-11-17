@@ -209,5 +209,22 @@ async function searchSetup(campaignId: bigint, createdAt: bigint, deployBlock: b
     if (created) return { created, published: found.find((e) => e.kind === 'published') }
     if (from === deployBlock && to === c.latest) break
   }
-  return undefined
+  // The estimate drifts for older campaigns (block times are not constant). Find the block by its timestamp instead.
+  const at = await firstBlockAtOrAfter(createdAt, deployBlock, c.latest)
+  const from = at - half < deployBlock ? deployBlock : at - half
+  const to = at + half > c.latest ? c.latest : at + half
+  const found = await queryLogs({ from, to, kinds: ['created', 'published'], campaignId })
+  const created = found.find((e) => e.kind === 'created')
+  return created ? { created, published: found.find((e) => e.kind === 'published') } : undefined
+}
+
+/** Binary search for the first block whose timestamp is at least `ts`: about 25 block reads for millions of blocks. */
+export async function firstBlockAtOrAfter(ts: bigint, lo: bigint, hi: bigint): Promise<bigint> {
+  while (lo < hi) {
+    const mid = lo + (hi - lo) / 2n
+    const b = await publicClient.getBlock({ blockNumber: mid })
+    if (b.timestamp < ts) lo = mid + 1n
+    else hi = mid
+  }
+  return lo
 }

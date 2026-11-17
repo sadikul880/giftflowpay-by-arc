@@ -174,9 +174,10 @@ export function ConnectWalletButton({ className = 'btn btn-primary', label = 'Co
   return (
     <ConnectKitButton.Custom>
       {({ show, isConnecting }) => (
-        <button type="button" className={className} onClick={show} disabled={isConnecting}>
+        // Never disabled: a wallet popup that was ignored leaves the connection pending, and the button must still reopen the picker.
+        <button type="button" className={className} onClick={show}>
           {isConnecting ? <Spinner /> : <Wallet className="size-4" />}
-          {isConnecting ? 'Connecting…' : label}
+          {isConnecting ? 'Connecting… (tap to retry)' : label}
         </button>
       )}
     </ConnectKitButton.Custom>
